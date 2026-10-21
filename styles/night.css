@@ -1,0 +1,375 @@
+/* Night arcade theme. Loaded last; layout and mobile geometry stay independent. */
+:root {
+  color-scheme: dark;
+  --bg: #0c1020;
+  --ink: #f0edff;
+  --muted: #afaac7;
+  --green: #a68cff;
+  --line: #43415f;
+  --surface: #191c32;
+  --gold: #ffcf70;
+  --mint: #7ce8bb;
+}
+body {
+  background-color: var(--bg);
+  background-image: radial-gradient(#34334e 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+header,
+.card,
+.modal,
+.event-dialog,
+.mobile-status,
+.mobile-navigation,
+.time-bar,
+.welcome {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: 4px 4px 0 #050714;
+}
+.intro h1,
+.intro p,
+.brand,
+.profile h2,
+.decision h2,
+.everyday-panel h2,
+.notice-content h2 {
+  color: var(--ink);
+}
+.eyebrow,
+.edition,
+.brand small,
+.chapter,
+.event-category,
+.event-age,
+.local-badge,
+.location,
+.decision-note,
+.event-copy,
+.everyday-panel p,
+.notice-content p,
+.notice-content small,
+.next-milestone,
+.time-bar label,
+.time-status {
+  color: var(--muted);
+}
+.button,
+.activities button,
+.filters button,
+.time-bar button {
+  background: #302748;
+  color: #eee8ff;
+  border-color: #6f5a98;
+  box-shadow: 3px 3px 0 #070811;
+}
+.button.green,
+.button.dark {
+  background: #7153bd;
+  color: white;
+}
+.choice {
+  background: #22253c;
+  color: var(--ink);
+  border-color: #44445f;
+  box-shadow: 3px 3px 0 #080a16;
+  animation: choice-enter 0.25s steps(5, both) both;
+}
+.choice:hover:not(:disabled) {
+  background: #302d4b;
+  border-color: #b496ff;
+  transform: translate(-2px, -2px);
+}
+.choice-paid {
+  border-left: 4px solid var(--gold);
+}
+.choice-number {
+  background: #393054;
+  color: #cbb6ff;
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+}
+.choice small,
+.choice em {
+  color: #b9b5ce;
+}
+.choice em {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.choice-body {
+  min-width: 0;
+}
+.money-tag,
+.income-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  margin: 5px 6px 0 0;
+  padding: 3px 5px;
+  border: 1px solid currentColor;
+  line-height: 1.4;
+}
+.money-tag.spend {
+  color: var(--gold);
+  background: #3d3020;
+}
+.money-tag.gain,
+.income-tag {
+  color: var(--mint);
+  background: #17352e;
+}
+.money-tag.free {
+  color: #b8b2ce;
+  background: #2b2a40;
+}
+.pill,
+.wallet,
+.quote-card,
+.tools,
+.share-preview,
+.notice-effects,
+.connection,
+.next-milestone,
+.achievement-list span,
+.insurance-payout {
+  background: #24263d;
+  color: #d7ccef;
+  border-color: #4e4569;
+}
+.wallet strong,
+.mobile-status strong,
+.mobile-status b {
+  color: var(--gold);
+}
+.mobile-navigation button {
+  color: #b3abc9;
+}
+.mobile-navigation button.active,
+.mobile-navigation button[aria-current="page"] {
+  background: #3c3058;
+  color: #e4d2ff;
+}
+.mobile-status small,
+.mobile-status span,
+.mini-stat {
+  color: #c4b9d7;
+}
+input:not([type="checkbox"]),
+textarea,
+select {
+  background: #111527;
+  color: var(--ink);
+  border-color: #635681;
+}
+.bar {
+  background: #353149;
+}
+.bar i {
+  transition: width 0.6s steps(8, end);
+}
+.scene-caption,
+.scene-location,
+.speech-bubble {
+  background: #25213c;
+  color: #f5e6ff;
+  border-color: #69587f;
+}
+.life-scene {
+  border-color: #655182;
+  box-shadow: 4px 4px 0 #080a15;
+}
+.notice-label {
+  background: #322548;
+  color: var(--gold);
+}
+.notice-scene {
+  background: #25233b;
+}
+.event-dialog::backdrop {
+  background: #050713c9;
+  backdrop-filter: blur(4px);
+}
+.event-dialog[open] {
+  animation: pixel-open 0.25s steps(5, end);
+}
+.economy-panel {
+  margin: 14px 0;
+  border: 2px solid #5a4a7a;
+  padding: 10px;
+  background: #111627;
+  min-width: 0;
+}
+.economy-panel summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #d8c1ff;
+  min-height: 36px;
+}
+.economy-panel summary span {
+  display: block;
+  font-size: 12px;
+  color: var(--gold);
+}
+.economy-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 10px;
+}
+.economy-stats span {
+  background: #24263c;
+  padding: 7px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.venture-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.venture-tabs button {
+  padding: 9px 7px;
+  flex: 1;
+  background: #24233b;
+  border: 1px solid #65517e;
+  color: #d8cee9;
+}
+.venture-tabs button[aria-pressed="true"] {
+  background: #6950a1;
+  color: #fff;
+  border-color: #c5a5ff;
+}
+.venture-note,
+.unlock-hint {
+  font-size: 12px;
+  color: #bfb4d2;
+}
+.risk-note {
+  color: #ffab9d !important;
+}
+.economy-panel .choices {
+  gap: 8px;
+}
+.economy-panel .choice {
+  padding: 10px;
+  grid-template-columns: 32px minmax(0, 1fr) 17px;
+}
+.notice-choices .choice {
+  padding: 8px;
+  grid-template-columns: 28px minmax(0, 1fr) 17px;
+}
+.notice-choices .choice strong {
+  font-size: 13px;
+}
+.notice-choices .choice small {
+  font-size: 11px;
+}
+.notice-choices .choice-number {
+  min-width: 28px;
+}
+.notice-choices {
+  margin-bottom: 12px;
+}
+button {
+  transition:
+    transform 0.12s steps(2, end),
+    background-color 0.15s,
+    border-color 0.15s;
+}
+button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+}
+.brand-icon {
+  animation: arcade-glow 3s steps(4, end) infinite;
+}
+.toast {
+  background: #2c2442;
+  color: #f3eaff;
+  border: 2px solid #a78add;
+  animation: pixel-open 0.2s steps(4, end);
+}
+.choice:nth-child(2) {
+  animation-delay: 35ms;
+}
+.choice:nth-child(3) {
+  animation-delay: 70ms;
+}
+.choice:nth-child(4) {
+  animation-delay: 105ms;
+}
+.choice:nth-child(5) {
+  animation-delay: 140ms;
+}
+@keyframes choice-enter {
+  from {
+    opacity: 0;
+    translate: 0 5px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes pixel-open {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes arcade-glow {
+  0%,
+  100% {
+    box-shadow: 3px 3px 0 #35254e;
+  }
+  50% {
+    box-shadow: 3px 3px 0 #9e74e3;
+  }
+}
+@media (max-width: 760px) {
+  .has-life .time-bar,
+  .has-life .mobile-status,
+  .has-life .mobile-navigation {
+    background: #191c32;
+  }
+  .choice {
+    padding: 8px;
+  }
+  .money-tag,
+  .income-tag {
+    font-size: 10px;
+  }
+  .economy-panel .choice strong {
+    font-size: 13px;
+  }
+  .notice-choices .choice small {
+    display: block;
+  }
+  .event-dialog .notice-scene {
+    max-height: 125px;
+    overflow: hidden;
+  }
+  .venture-tabs button {
+    min-height: 40px;
+  }
+  .economy-panel {
+    padding: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

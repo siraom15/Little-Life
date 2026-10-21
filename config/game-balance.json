@@ -1,0 +1,114 @@
+{
+  "revision": 8,
+  "dark": {
+    "mafiaIncome": 1800000,
+    "undergroundIncome": 1200000,
+    "heatPerYear": 8,
+    "maxRaidChance": 0.12,
+    "negotiationSocialWeight": 0.45,
+    "promotionHeat": 15
+  },
+  "family": {
+    "supportUntil": 22,
+    "childCost": 36000,
+    "parentLivingCost": 100000,
+    "parentSavingRate": 0.2,
+    "startingSavings": 80000,
+    "inheritanceChance": 0.7,
+    "spouseIncomeMin": 144000,
+    "spouseIncomeRange": 216000,
+    "spouseLivingCost": 60000,
+    "spouseDeathChance": 0.003,
+    "parentDeathAgeMin": 65,
+    "parentDeathAgeRange": 27,
+    "spouseStartingSavings": 200000,
+    "spouseOlderDeathChance": 0.02,
+    "spouseElderlyDeathChance": 0.05,
+    "initialMoney": {
+      "lowIncomeCeiling": 330000,
+      "middleIncomeCeiling": 420000,
+      "low": 20000,
+      "middle": 80000,
+      "high": 200000
+    },
+    "redEnvelope": {
+      "min": 500,
+      "max": 5000,
+      "minAge": 3,
+      "maxAge": 25
+    }
+  },
+  "assets": {
+    "offerChance": 0.12,
+    "damageChance": 0.04,
+    "house": {
+      "health": 2,
+      "happy": 3,
+      "repairRate": 0.08,
+      "rate": 0.06,
+      "years": 15,
+      "downRate": 0.2,
+      "maintenanceRate": 0.01
+    },
+    "car": {
+      "health": 0,
+      "happy": 3,
+      "repairRate": 0.06,
+      "rate": 0.08,
+      "years": 5,
+      "downRate": 0.25,
+      "maintenanceRate": 0.04
+    },
+    "prices": {
+      "condo": 350000,
+      "townhouse": 650000,
+      "detached": 1200000,
+      "garden": 2200000,
+      "mansion": 5000000,
+      "scooter": 45000,
+      "compact": 280000,
+      "sedan": 650000,
+      "suv": 1100000,
+      "sport": 3500000
+    }
+  },
+  "life": {
+    "averageLifespan": 78,
+    "maxAge": 110,
+    "prisonDeathRisk": 0.008
+  },
+  "health": {
+    "eventChance": 0.14,
+    "hospitalThreshold": 25,
+    "addictionHospitalThreshold": 75,
+    "overdoseThreshold": 90,
+    "overdoseRisk": 0.15,
+    "eventChance20to40": 0.48,
+    "eventChanceOver40": 0.58
+  },
+  "investment": {
+    "intervals": [2, 3, 5],
+    "fund": {
+      "min": 0.88,
+      "range": 0.3
+    },
+    "stock": {
+      "min": 0.7,
+      "range": 0.65
+    },
+    "crypto": {
+      "min": 0.4,
+      "range": 1.4
+    }
+  },
+  "events": {
+    "randomChance": 0.28,
+    "cooldownYears": 1,
+    "layoffChance": 0.045,
+    "redEnvelopeChance": 0.16
+  },
+  "education": {
+    "matchingCareerBonus": 25,
+    "relatedCareerBonus": 10
+  }
+}

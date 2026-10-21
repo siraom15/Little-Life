@@ -1,0 +1,157 @@
+.life-scene {
+  overflow: hidden;
+  border: 3px solid #5d467f;
+  border-radius: 10px;
+  box-shadow: 0 5px 0 #c4afd9;
+  background: #655080;
+}
+.scene-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  color: #e8daf7;
+  gap: 8px;
+  font-size: 10px;
+}
+.scene-top > span:first-child {
+  font-family: monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+.scene-top i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #9cdb9e;
+  margin-right: 6px;
+}
+.scene-top b {
+  font-weight: 500;
+  color: #dbc7f0;
+}
+.scene-top strong {
+  color: #ffe4a0;
+  font-size: 14px;
+}
+.pixel-world {
+  position: relative;
+  background: #b8dafa;
+}
+.pixel-world svg {
+  display: block;
+  width: 100%;
+  image-rendering: pixelated;
+}
+.scene-location {
+  position: absolute;
+  top: 12px;
+  left: 13px;
+  background: #ffffffe0;
+  padding: 5px 9px;
+  box-shadow: 3px 3px 0 #557ea233;
+  color: #61849b;
+  font-size: 10px;
+  border: 1px solid #9abfd0;
+}
+.speech-bubble {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translateX(-50%);
+  border: 2px solid #a998b9;
+  background: #fffdf7;
+  color: #766286;
+  font-size: 11px;
+  padding: 7px 12px;
+  box-shadow: 3px 3px 0 #6f58822b;
+  white-space: nowrap;
+}
+.speech-bubble:after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  left: 48%;
+  width: 9px;
+  height: 9px;
+  background: #fffdf7;
+  border-right: 2px solid #a998b9;
+  border-bottom: 2px solid #a998b9;
+  transform: rotate(45deg);
+}
+.scene-level {
+  position: absolute;
+  bottom: 9px;
+  right: 12px;
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #947d64;
+}
+.scene-bottom {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 13px;
+  gap: 10px;
+  background: #72578d;
+  color: #ecdef7;
+  font-size: 10px;
+}
+.scene-bottom b {
+  color: #ffe1a8;
+}
+.scene-bottom > span:last-child {
+  color: #e6c2e3;
+}
+.last-action {
+  background: #f2e6ff;
+  color: #9671ac;
+  font-size: 10px;
+  padding: 9px 14px;
+  animation: action-in 0.4s ease-out;
+}
+.last-action > span {
+  color: #73aa92;
+  margin-right: 5px;
+}
+.sprite-idle {
+  animation: idle 2.4s steps(2, end) infinite;
+}
+.pixel-clouds {
+  animation: clouds 20s ease-in-out infinite alternate;
+}
+.pixel-pet {
+  animation: idle 1.8s steps(2, end) infinite;
+}
+.character-wave .sprite-idle {
+  animation: jump 0.5s steps(3, end) 3;
+}
+.scene-night .scene-location {
+  background: #e4e1f6;
+}
+.scene-night .pixel-clouds {
+  opacity: 0.4;
+}
+@keyframes idle {
+  50% {
+    translate: 0 -1px;
+  }
+}
+@keyframes jump {
+  50% {
+    translate: 0 -6px;
+  }
+}
+@keyframes clouds {
+  to {
+    translate: 15px 0;
+  }
+}
+@keyframes action-in {
+  from {
+    background: #ffe6a2;
+  }
+  to {
+    background: #f2e6ff;
+  }
+}

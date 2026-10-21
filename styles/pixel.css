@@ -1,0 +1,474 @@
+/* Pixel skin. Square panels, hard shadows, high-contrast controls. */
+:root {
+  --ink: #392d55;
+  --green: #7551b3;
+  --line: #baa3d0;
+}
+.card,
+.button,
+.choice,
+.choice-number,
+.brand-icon,
+.pill,
+.wallet,
+.quote-card,
+.tools,
+.life-scene,
+.modal,
+.share-preview,
+.toast,
+.filters button,
+.scene-location,
+.speech-bubble,
+.mobile-status,
+.mobile-navigation button,
+input:not([type="checkbox"]),
+textarea,
+select {
+  border-radius: 0 !important;
+}
+.card {
+  border: 2px solid #bca7cf;
+  box-shadow: 3px 3px 0 #d9c7e6;
+}
+.brand-icon {
+  border: 2px solid #563a80;
+  box-shadow: 3px 3px 0 #c3a6dd;
+}
+.button {
+  border: 2px solid #533879;
+  box-shadow: 3px 3px 0 #bba4d1;
+}
+.green,
+.dark {
+  background: #7753ae;
+  color: #fff9ed;
+}
+.choice {
+  border: 2px solid #bba2ce;
+  box-shadow: 2px 2px 0 #e0d1eb;
+  background: #fffdf4;
+}
+.choice:hover:not(:disabled) {
+  border-color: #8f65b3;
+  background: #eee0fb;
+  transform: translateY(-1px);
+}
+.choice:active:not(:disabled) {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+.choice-number {
+  background: #e9d5fa;
+  color: #8157a1;
+}
+.choice small {
+  color: #7d638f;
+}
+.bar,
+.bar i {
+  border-radius: 0 !important;
+}
+.bar {
+  box-shadow: inset 0 0 0 1px #d4c5dd;
+}
+.profile-cover {
+  border-bottom: 3px solid #a78aba;
+}
+.avatar {
+  border-radius: 0;
+  background: #f2d291;
+  border-color: #8f6baa;
+}
+.scene-top,
+.scene-level,
+.notice-label {
+  font-family: monospace;
+  letter-spacing: 0.6px;
+}
+.life-scene {
+  border: 3px solid #563d75;
+  box-shadow: 4px 4px 0 #c5a7dc;
+}
+.scene-top {
+  background: #523d71;
+}
+.scene-bottom {
+  background: #715187;
+}
+.scene-location {
+  border: 2px solid #9c83b3;
+  background: #fff5de;
+  color: #745d85;
+}
+.speech-bubble {
+  border-color: #9473aa;
+  box-shadow: 3px 3px 0 #6b527d55;
+}
+.scene-death .scene-bottom {
+  background: #4d405d;
+}
+.last-action {
+  background: #eee1f5;
+  color: #715384;
+}
+.pill {
+  background: #edddfa;
+  border-left: 3px solid #a676c6;
+}
+.intro h1 {
+  font-weight: 700;
+}
+.time-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 2px solid #bca3d2;
+  padding: 7px;
+  background: #e9dcf4;
+  flex-wrap: wrap;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.time-bar label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.time-bar select {
+  border: 1px solid #af93c6;
+  background: #fff7ee;
+  color: #59406d;
+  padding: 5px;
+  font-size: 11px;
+  max-width: 150px;
+}
+.time-bar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 32px;
+  min-width: 32px;
+  border: 1px solid #a081b9;
+  background: #fff8e9;
+  box-shadow: 2px 2px 0 #cbb2dd;
+  font-size: 10px;
+  padding: 4px 7px;
+}
+.clock-state {
+  margin-left: auto;
+  color: #89659f;
+  font-size: 10px;
+}
+.time-step {
+  color: #765095;
+  font-weight: 600;
+}
+.everyday-panel h2 {
+  font-size: 21px;
+}
+.everyday-panel p {
+  color: #8b739a;
+  font-size: 12px;
+  line-height: 1.8;
+}
+.activities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 15px 0;
+}
+.activities button {
+  border: 2px solid #c3a5d7;
+  background: #faf0fe;
+  box-shadow: 3px 3px 0 #dcc6e9;
+  padding: 12px 6px;
+  color: #77588d;
+  font-size: 12px;
+  min-height: 52px;
+}
+.activities small {
+  display: block;
+  color: #9e7fad;
+  font-size: 10px;
+  margin-top: 4px;
+}
+.next-milestone {
+  border-top: 1px dashed #ceb7df;
+  padding-top: 12px;
+  margin-top: 14px;
+  font-size: 11px;
+  color: #9779aa;
+}
+.next-milestone span {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: #b096bf;
+}
+.event-dialog {
+  margin: auto;
+  border: 3px solid #61427e;
+  padding: 0;
+  max-width: 440px;
+  width: calc(100% - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  background: #fff9ec;
+  color: #4e365e;
+  box-shadow: 7px 7px 0 #35234855;
+}
+.event-dialog::backdrop {
+  background: #2f203f99;
+  backdrop-filter: blur(3px);
+}
+.notice-label {
+  display: flex;
+  justify-content: space-between;
+  background: #674787;
+  color: #f7e4ba;
+  padding: 10px 14px;
+  font-size: 11px;
+}
+.notice-label span {
+  font-family: inherit;
+  color: #e0c8f0;
+}
+.notice-scene {
+  background: #d6c2e3;
+  border-bottom: 3px solid #aa8cbb;
+}
+.notice-scene svg {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  image-rendering: pixelated;
+}
+.notice-content {
+  padding: 19px;
+}
+.notice-content h2 {
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+.notice-content p {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #8e7698;
+}
+.notice-effects {
+  background: #ede0f5;
+  border-left: 4px solid #a17bc0;
+  font-size: 12px;
+  padding: 10px;
+  color: #805e96;
+  margin: 15px 0;
+}
+.notice-content .button {
+  width: 100%;
+  font-size: 13px;
+  min-height: 44px;
+}
+.notice-content > small {
+  display: block;
+  text-align: center;
+  font-size: 10px;
+  color: #ad95b3;
+  margin-top: 12px;
+}
+.is-death .notice-label {
+  background: #483850;
+  color: #e9cfa6;
+}
+.is-death {
+  border-color: #60506c;
+}
+.is-death .notice-effects {
+  background: #eee7ed;
+  border-color: #a393ac;
+}
+.baby-breathe {
+  animation: baby-breathe 2s steps(2, end) infinite;
+}
+.memory-star {
+  animation: memory-star 3s steps(3, end) infinite;
+}
+.ending-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+@keyframes baby-breathe {
+  50% {
+    translate: 0 -1px;
+  }
+}
+@keyframes memory-star {
+  50% {
+    opacity: 0.4;
+    translate: 0 -4px;
+  }
+}
+@media (max-width: 760px) {
+  .has-life .time-bar {
+    width: 100%;
+    margin: 0 0 6px;
+    padding: 4px 6px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-height: 36px;
+  }
+  .has-life .time-bar select {
+    font-size: 9px;
+    max-width: 100px;
+    padding: 3px;
+    min-height: 26px;
+  }
+  .has-life .time-bar label {
+    font-size: 0;
+    gap: 0;
+  }
+  .has-life .time-bar button {
+    font-size: 9px;
+    min-height: 27px;
+    min-width: 27px;
+    padding: 3px 5px;
+  }
+  .has-life .clock-state {
+    font-size: 8px;
+    white-space: nowrap;
+  }
+  .has-life[data-mobile-view="player"] .time-bar,
+  .has-life[data-mobile-view="history"] .time-bar,
+  .has-life[data-mobile-view="menu"] .time-bar {
+    display: none;
+  }
+  .has-life .life-scene {
+    box-shadow: 2px 2px 0 #bda2d2;
+  }
+  .has-life .scene-top {
+    font-size: 8px;
+  }
+  .has-life .everyday-panel h2 {
+    font-size: 17px;
+  }
+  .has-life .everyday-panel p {
+    font-size: 11px;
+    margin: 8px 0;
+  }
+  .has-life .activities {
+    gap: 5px;
+    margin: 10px 0;
+  }
+  .has-life .activities button {
+    font-size: 11px;
+    padding: 10px 3px;
+    box-shadow: 2px 2px 0 #dcc6e9;
+  }
+  .has-life .activities small {
+    font-size: 9px;
+  }
+  .has-life .next-milestone {
+    font-size: 10px;
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+  .has-life .next-milestone span {
+    font-size: 9px;
+  }
+  .has-life .decision .section-top:has(+ .everyday-panel) {
+    display: none;
+  }
+  .has-life .mobile-status {
+    border: 2px solid #c3a7d5;
+    box-shadow: 2px 2px 0 #e2cee9;
+  }
+  .mobile-navigation {
+    border-top: 2px solid #a587bd;
+  }
+  .mobile-navigation button.active {
+    background: #dec5ed;
+    border: 1px solid #ad89c2;
+    box-shadow: 2px 2px 0 #c9b0dc;
+  }
+  .event-dialog {
+    max-height: calc(
+      100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)
+    );
+    width: calc(100% - 24px);
+  }
+  .notice-content {
+    padding: 14px;
+  }
+  .notice-content h2 {
+    font-size: 19px;
+  }
+  .notice-content p {
+    font-size: 12px;
+  }
+  .notice-scene svg {
+    height: 170px;
+  }
+  .notice-label {
+    font-size: 9px;
+    padding: 8px 11px;
+  }
+  .notice-effects {
+    font-size: 11px;
+    margin: 10px 0;
+  }
+  .notice-content .button {
+    font-size: 12px;
+  }
+  .has-life .ending-actions .button {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+}
+@media (max-width: 360px) {
+  .has-life .clock-state {
+    display: none;
+  }
+}
+@media (max-height: 620px) and (max-width: 760px) {
+  .notice-scene svg {
+    height: 115px;
+  }
+  .notice-content p {
+    margin: 7px 0;
+  }
+  .notice-content {
+    padding: 12px;
+  }
+  .notice-content > small {
+    margin-top: 7px;
+  }
+  .has-life .activities button {
+    min-height: 44px;
+    padding: 7px 2px;
+  }
+  .has-life .next-milestone {
+    margin-top: 7px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .baby-breathe,
+  .memory-star {
+    animation: none !important;
+  }
+}
+.achievement-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.achievement-list span {
+  font-size: 10px;
+  border: 1px solid #d0ab68;
+  background: #fff1c9;
+  color: #97723a;
+  padding: 4px 7px;
+}
