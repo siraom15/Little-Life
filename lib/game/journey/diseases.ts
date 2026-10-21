@@ -55,7 +55,7 @@ export function yearlyDisease(life: Life) {
       title: "ผลตรวจเปลี่ยนชีวิต",
       text: diseaseLabel(life),
       scene: "hospital",
-      effects: "รอเลือกการรักษา · ตัวเลขเป็นกติกาสมมุติของเกม",
+      effects: "รอเลือกการรักษา · ติดตามอาการและเลือกการรักษา",
     });
   } else if (
     h.severe.stage < 4 &&
@@ -112,7 +112,7 @@ export function diseaseEvent(life: Life) {
     "วางแผนรักษา: " + diseaseLabel(life),
     "ความเสี่ยงเสียชีวิตจากโรคปีนี้ประมาณ " +
       Math.round(seriousDiseaseRisk(life) * 100) +
-      "% · ประกันชีวิตจ่ายให้คนข้างหลัง ไม่จ่ายค่ารักษา · แบบจำลองเกม",
+      "% · ประกันชีวิตจ่ายให้คนข้างหลัง ไม่จ่ายค่ารักษา",
     [
       choice("standard", "รักษาตามแผน", 12000 * d.stage, 0),
       choice("intensive", "รักษาเข้มข้น", 30000 * d.stage, 15),

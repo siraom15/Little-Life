@@ -57,7 +57,9 @@ export function annualExpenses(life: Life) {
       (life.journey!.partner?.status === "married"
         ? gameConfig.family.spouseLivingCost
         : 0) +
-      (life.location === "ญี่ปุ่น" ? 60000 : 0) +
+      (gameConfig.abroad.countries[
+        life.location as keyof typeof gameConfig.abroad.countries
+      ]?.livingCost || 0) +
       assetMaintenance(life) -
       (life.journey!.house && life.journey!.hasWorked ? 36000 : 0),
   );
@@ -254,7 +256,8 @@ export function yearlyFinance(
     life.money -= paid;
     j.debt -= paid;
     j.arrears = paid < due ? j.arrears + 1 : 0;
-    if (j.arrears >= 3 || j.debt > 350000) bankrupt(life);
+    if (j.arrears >= 3 || j.debt > gameConfig.choiceCredit.bankruptcyThreshold)
+      bankrupt(life);
   }
 }
 export { settleDeathBenefit };

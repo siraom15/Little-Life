@@ -50,6 +50,10 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
                 : "home";
   const illustration = structuredClone(life);
   illustration.age = frame.age;
+  illustration.location =
+    frame.location ||
+    [...life.history].reverse().find((e) => e.age <= frame.age && e.location)?.location ||
+    "ไทย";
   illustration.done = scene === "death";
   illustration.money = frame.money;
   illustration.simulation!.notice = null;
@@ -88,8 +92,18 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
       visual: "portfolio",
       chart: life.journey!.investment.points.filter((p) => p.age <= frame.age),
     };
-  const accident=accidentTypes.find(a=>frame.id.startsWith("accident-"+a.id+"-"));
-  if(accident) illustration.simulation!.notice={id:frame.id,title:frame.title,text:frame.detail,scene:"hospital",effects:"",accident:accident.id};
+  const accident = accidentTypes.find((a) =>
+    frame.id.startsWith("accident-" + a.id + "-"),
+  );
+  if (accident)
+    illustration.simulation!.notice = {
+      id: frame.id,
+      title: frame.title,
+      text: frame.detail,
+      scene: "hospital",
+      effects: "",
+      accident: accident.id,
+    };
   illustration.journey!.house = null;
   illustration.journey!.car = null;
   illustration.journey!.extraCars = [];

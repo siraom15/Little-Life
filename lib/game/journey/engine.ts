@@ -1,3 +1,5 @@
+import { choiceCredit } from "./choice-credit.ts";
+import { abroadEvent } from "./abroad.ts";
 import { yearlyAccident } from "./accidents.ts";
 import { yearlyDisease, diseaseEvent, applyDiseaseCare } from "./diseases.ts";
 import { redEnvelopeEvent } from "./events/red-envelope.ts";
@@ -93,6 +95,12 @@ export function createGameLife(seed: number, name = "นที"): Life {
     milestones: [],
     lastResult: "เริ่มชีวิตใหม่",
   };
+  life.stats.health = 65 + Math.floor(randomAt(seed, 0, 320) * 31);
+  life.stats.happy = 35 + Math.floor(randomAt(seed, 0, 321) * 56);
+  life.stats.social = 20 + Math.floor(randomAt(seed, 0, 322) * 61);
+  for (const [i, key] of Object.keys(life.journey!.skills).entries())
+    life.journey!.skills[key as Skill] = 3 + Math.floor(randomAt(seed, 0, 323 + i) * 23);
+  refreshSkills(life);
   const wallet = startingWallet(life);
   life.money = wallet.money;
   life.background = wallet.background;
@@ -146,7 +154,7 @@ function setCareer(life: Life, id: string) {
   life.journey!.hasWorked = true;
 
   life.job = positionTitle(id, 0);
-  life.income = careerIncome(id, 0);
+  life.income = careerIncome(id, 0, life.location);
   life.flags = life.flags.filter((flag) => flag !== "retired");
 }
 function applyOutcome(life: Life, result: Outcome) {
@@ -167,7 +175,16 @@ function applyOutcome(life: Life, result: Outcome) {
     else j.house = null;
   }
   if (result.school) j.school = result.school;
-  if (result.location) life.location = result.location;
+  if (result.location) {
+    life.location = result.location;
+    j.queue.push({
+      id: "move-" + life.age,
+      title: "บทใหม่ที่" + life.location,
+      text: "บ้านหลังต่อไปของคุณอยู่ที่นี่",
+      scene: "travel",
+      effects: "รายได้และค่าครองชีพเปลี่ยนตามประเทศ",
+    });
+  }
   if (result.loseJob) {
     j.career = null;
     life.job = "ว่างงาน";
@@ -175,8 +192,10 @@ function applyOutcome(life: Life, result: Outcome) {
   }
   if (result.career) setCareer(life, result.career);
   if (result.promote && j.career) {
+    if (j.career.rank < 3 && j.milestonesScore)
+      j.milestonesScore.promotionCount = (j.milestonesScore.promotionCount || 0) + 1;
     j.career.rank = Math.min(3, j.career.rank + 1);
-    life.income = careerIncome(j.career.id, j.career.rank);
+    life.income = careerIncome(j.career.id, j.career.rank, life.location);
     life.job = positionTitle(j.career.id, j.career.rank);
   }
   if (result.diseaseCare)
@@ -452,10 +471,7 @@ function stepYear(life: Life) {
   if (life.simulation!.economy!.prisonUntil <= life.age) {
     const investigationChance = raidChance(life);
     if (wasImprisoned) trigger(life, careerOffer(life));
-    else if (
-      life.age >= 18 &&
-      randomAt(life.seed, life.age, 136) < investigationChance
-    )
+    else if (life.age >= 18 && randomAt(life.seed, life.age, 136) < investigationChance)
       trigger(life, policeRaid(life));
     else if (scheduled && !j.milestones.includes(scheduled.id)) {
       trigger(life, scheduled);
@@ -492,7 +508,22 @@ function stepYear(life: Life) {
       randomAt(life.seed, life.age, 247) < gameConfig.events.layoffChance
     )
       trigger(life, careerOffer(life, "loss"));
-    else if (reward) {
+    else if (
+      life.age >= 23 &&
+      life.age < 60 &&
+      life.age - j.lastEventAge >= 2 &&
+      randomAt(life.seed, life.age, 310) < gameConfig.abroad.offerChance
+    ) {
+      const offer = abroadEvent(life);
+      trigger(life, offer);
+      j.queue.push({
+        id: "abroad-preview-" + life.age,
+        title: offer.title,
+        text: offer.text,
+        scene: "travel",
+        effects: "ญี่ปุ่น · ออสเตรเลีย · เยอรมนี",
+      });
+    } else if (reward) {
       trigger(life, reward);
       j.queue.push({
         id: "work-preview-" + life.age,
@@ -555,7 +586,22 @@ export function journeyAction(life: Life, action: SimulationAction): Life {
   } else if (action.type === "choice") {
     const current = j.pending,
       choice = current?.choices[action.index];
-    if (!current || !choice || storyChoiceLocked(life, choice)) return life;
+    if (!current || !choice) return life;
+    if (action.borrow) {
+      const credit = choiceCredit(life, choice);
+      if (!credit) return life;
+      next.money += credit.amount;
+      j.debt += credit.amount;
+      record(
+        next,
+        "กู้เพื่อทางเลือก",
+        "ยืนยันกู้ ฿" + credit.amount.toLocaleString("th-TH"),
+        "ดอกเบี้ย 18% ต่อปี · หนี้รวม ฿" + credit.total.toLocaleString("th-TH"),
+        "การเงิน",
+        "choice-loan-" + next.age,
+      );
+    }
+    if (storyChoiceLocked(next, choice)) return life;
     if (choice.assetAction) {
       j.pending = null;
       if (!purchaseAsset(next, choice.assetAction)) return life;
@@ -613,6 +659,8 @@ export function journeyAction(life: Life, action: SimulationAction): Life {
       current.category,
       current.id,
     );
+    next.history.at(-1)!.outcomeSuccess = won;
+    next.history.at(-1)!.location = next.location;
     j.pending = null;
     if (next.stats.health <= 0) finishLife(next, deathCause(next));
     else showQueue(next);
@@ -647,7 +695,8 @@ export function replayJourney(seed: number, name: string, actions: unknown): Lif
       if (Object.keys(action).length !== 1) return null;
     } else if (action.type === "choice") {
       if (
-        Object.keys(action).length !== 2 ||
+        Object.keys(action).length !== (action.borrow === true ? 3 : 2) ||
+        ("borrow" in action && action.borrow !== true) ||
         !Number.isInteger(action.index) ||
         action.index < 0
       )

@@ -11,6 +11,8 @@ function nonNegative(value: unknown, path: string): void {
 }
 nonNegative(balance, "game-balance");
 for (const [path, value] of Object.entries({
+  overseasOffer: balance.abroad.offerChance,
+  lottery: balance.lottery.chance,
   confiscation: balance.prison.confiscationChance,
   healthEvent: balance.health.eventChance,
   healthAdult: balance.health.eventChance20to40,
@@ -84,4 +86,9 @@ for (const risk of Object.values(balance.investment.risks)) {
     throw new Error("Invalid investment risk");
 }
 
-if(balance.accidents.minLossRate>balance.accidents.maxLossRate || balance.accidents.maxLossRate>1 || !Number.isInteger(balance.accidents.recoveryYears)) throw new Error("Invalid accident config");
+if (
+  balance.accidents.minLossRate > balance.accidents.maxLossRate ||
+  balance.accidents.maxLossRate > 1 ||
+  !Number.isInteger(balance.accidents.recoveryYears)
+)
+  throw new Error("Invalid accident config");

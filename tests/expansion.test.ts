@@ -31,7 +31,7 @@ function fixture() {
   return life;
 }
 test("20 career paths include mafia, underground work and politics; family opportunities recur", () => {
-  assert.equal(jobs.length, 20);
+  assert.equal(jobs.length, 23);
   assert.ok(riskyJobs.has("mafia"));
   assert.ok(jobs.some((j) => j.id === "politician"));
   const life = fixture();

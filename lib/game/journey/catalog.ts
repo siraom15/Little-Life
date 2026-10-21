@@ -8,7 +8,34 @@ export const skillLabels: Record<Skill, string> = {
   communication: "สื่อสาร",
   care: "ดูแลผู้คน",
 };
+export const overseasJobs = [
+  {
+    id: "japan-tech",
+    label: "ช่างระบบอัตโนมัติในญี่ปุ่น",
+    skill: "tech",
+    income: 360000,
+    icon: "tool",
+    country: "ญี่ปุ่น",
+  },
+  {
+    id: "australia-care",
+    label: "ผู้ดูแลผู้สูงอายุในออสเตรเลีย",
+    skill: "care",
+    income: 360000,
+    icon: "heart",
+    country: "ออสเตรเลีย",
+  },
+  {
+    id: "germany-engineer",
+    label: "วิศวกรพลังงานในเยอรมนี",
+    skill: "tech",
+    income: 480000,
+    icon: "tool",
+    country: "เยอรมนี",
+  },
+] as const;
 export const jobs = [
+  ...overseasJobs,
   { id: "doctor", label: "แพทย์", skill: "care", income: 540000, icon: "heart" },
   { id: "lawyer", label: "ทนายความ", skill: "academic", income: 420000, icon: "shield" },
   { id: "chef", label: "เชฟ", skill: "creative", income: 288000, icon: "food" },
@@ -89,9 +116,13 @@ export const stages: Record<number, string> = {
   80: "ความทรงจำแปดสิบปี",
 };
 export const clamp = (value: number) => Math.max(0, Math.min(100, value));
-export function careerIncome(id: string, rank: number) {
+export function careerIncome(id: string, rank: number, location = "ไทย") {
   const job = jobs.find((j) => j.id === id);
-  return job ? Math.round(job.income * (1 + rank * 0.35)) : 0;
+  const country =
+    gameConfig.abroad.countries[location as keyof typeof gameConfig.abroad.countries];
+  return job
+    ? Math.round(job.income * (1 + rank * 0.35) * (country?.salaryMultiplier || 1))
+    : 0;
 }
 
 export const riskyJobs = new Set(["mafia", "underground"]);

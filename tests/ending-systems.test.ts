@@ -28,14 +28,20 @@ test("six trophy categories have three earned tiers and no automatic bronze", ()
   l.history = [];
   assert.equal(endingAchievements(l).length, 6);
   assert.ok(endingAchievements(l).every((a) => a.tier === null));
-  l.money = 10000000;
-  l.journey!.milestonesScore = { healthyYears: 50, marriedYears: 25, peakRank: 3 };
+  l.money = 20000000;
+  l.journey!.milestonesScore = {
+    healthyYears: 100,
+    marriedYears: 50,
+    peakRank: 3,
+    promotionCount: 6,
+  };
   l.journey!.skills.tech = 95;
-  l.journey!.funeral = { estate: 5000000, title: "", guests: [] };
+  l.journey!.skills.care = 95;
+  l.journey!.funeral = { estate: 10000000, title: "", guests: [] };
   assert.ok(endingAchievements(l).every((a) => a.tier === "plat"));
-  l.money = 100000;
+  l.money = 200000;
   assert.equal(endingAchievements(l)[0].tier, "bronze");
-  l.money = 1000000;
+  l.money = 2000000;
   assert.equal(endingAchievements(l)[0].tier, "gold");
 });
 test("card escapes user text; film retains chronological birth and ending", () => {
@@ -155,7 +161,17 @@ test("work rewards cover insurance, houses and cars; insurance is charged once",
   assert.deepEqual([...seen].sort(), ["car", "house", "insurance"]);
 });
 
-test("disease follow-up does not swallow a fixed school milestone",()=>{
- const l=createGameLife(42);l.age=5;l.simulation!.notice=null;l.journey!.health.severe={id:"cancer",stage:1,diagnosedAt:5,reviewedAt:-1,treatedUntil:8};
- const next=journeyAction(l,{type:"year"});assert.equal(next.journey!.pending?.id,"school");
+test("disease follow-up does not swallow a fixed school milestone", () => {
+  const l = createGameLife(42);
+  l.age = 5;
+  l.simulation!.notice = null;
+  l.journey!.health.severe = {
+    id: "cancer",
+    stage: 1,
+    diagnosedAt: 5,
+    reviewedAt: -1,
+    treatedUntil: 8,
+  };
+  const next = journeyAction(l, { type: "year" });
+  assert.equal(next.journey!.pending?.id, "school");
 });

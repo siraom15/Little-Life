@@ -1,3 +1,4 @@
+import AbroadScene from "./AbroadScene";
 import AccidentScene from "./AccidentScene";
 import WorkRewardScene from "./WorkRewardScene";
 import NoticeScene from "./NoticeScene";
@@ -60,6 +61,8 @@ export default function SceneIllustration({
   const dead = kind === "death" || !!life.simulation?.death;
   const festival = kind === "festival";
   const indoor = nursery || hospital;
+  if (!indoor && !dead && ["ญี่ปุ่น", "ออสเตรเลีย", "เยอรมนี"].includes(life.location))
+    return <AbroadScene life={life} />;
   const shirt =
     life.age < 13
       ? "#f7edce"

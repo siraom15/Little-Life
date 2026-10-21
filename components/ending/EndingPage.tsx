@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { decodeLife, type Life } from "@/lib/game";
+import { encodeLife, decodeLife, type Life } from "@/lib/game";
 import { loadLife, storyLink } from "@/lib/browser/life-storage";
 import { endingAchievements } from "@/lib/game/journey/achievements";
 import { endingCardSvg } from "@/lib/game/journey/ending-card";
@@ -113,6 +113,7 @@ export default function EndingPage() {
         </button>
         <button onClick={() => setFilm(true)}>▶ หนังสั้น</button>
         <button onClick={() => setDetails(!details)}>ถ้วย / รายละเอียด</button>
+        <a href={"/#life=" + encodeURIComponent(encodeLife(life))}>← กลับไปงานศพ</a>
         <a href="/#new=1">เริ่มชีวิตใหม่</a>
       </nav>
       {message && (

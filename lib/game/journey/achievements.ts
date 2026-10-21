@@ -7,52 +7,55 @@ export function endingAchievements(life: Life) {
   const j = life.journey!,
     scores = j.milestonesScore;
   const peakMoney = Math.max(life.money, ...life.history.map((e) => e.money));
-  const rank = Math.max(j.career?.rank || 0, scores?.peakRank || 0);
+  const rank = scores?.promotionCount || 0;
   const legacy =
     Math.max(0, j.funeral?.estate || 0) +
     (life.simulation?.economy?.beneficiaryPayout || 0);
-  const skill = Math.max(...Object.values(j.skills));
+  const skill = Object.values(j.skills)
+    .sort((a, b) => b - a)
+    .slice(0, 2)
+    .reduce((a, b) => a + b, 0);
   const definitions = [
     {
       id: "wealth",
       title: "การเงิน",
       value: peakMoney,
-      thresholds: [100000, 1000000, 10000000],
+      thresholds: [200000, 2000000, 20000000],
       unit: "บาทสูงสุด",
     },
     {
       id: "health",
       title: "สุขภาพ",
       value: scores?.healthyYears || 0,
-      thresholds: [10, 30, 50],
+      thresholds: [20, 60, 100],
       unit: "ปีสุขภาพดี",
     },
     {
       id: "career",
       title: "อาชีพ",
       value: rank,
-      thresholds: [1, 2, 3],
+      thresholds: [2, 4, 6],
       unit: "ขั้นที่เลื่อน",
     },
     {
       id: "love",
       title: "ความรัก",
       value: scores?.marriedYears || 0,
-      thresholds: [1, 10, 25],
+      thresholds: [2, 20, 50],
       unit: "ปีคู่ชีวิต",
     },
     {
       id: "learning",
       title: "การเรียนรู้",
       value: skill,
-      thresholds: [40, 70, 95],
-      unit: "ทักษะสูงสุด",
+      thresholds: [80, 140, 190],
+      unit: "ผลรวมสองทักษะสูงสุด",
     },
     {
       id: "legacy",
       title: "ส่งต่อ",
       value: legacy,
-      thresholds: [150000, 1000000, 5000000],
+      thresholds: [300000, 2000000, 10000000],
       unit: "บาทให้คนข้างหลัง",
     },
   ];
@@ -68,21 +71,27 @@ export function endingAchievements(life: Life) {
   }));
 }
 export function lifeHighlights(life: Life) {
-  const entries = life.history.filter(
-    (e) =>
-      !e.id.startsWith("finance-") && !e.id.startsWith("invest-") && e.id !== "death",
-  );
-  const middle = entries.filter((e) => e.age > 0 && e.age < life.age);
-  const picked = Array.from(
-    { length: Math.min(6, middle.length) },
-    (_, i) =>
-      middle[
-        Math.floor(
-          (i * Math.max(0, middle.length - 1)) /
-            Math.max(1, Math.min(6, middle.length) - 1),
-        )
-      ],
-  );
+  const importance = (e: Entry) => {
+    if (
+      e.outcomeSuccess === false ||
+      e.id === "death" ||
+      e.age === 0 ||
+      /ไม่สำเร็จ|ไม่ผ่าน/.test(e.detail)
+    )
+      return 0;
+    const text = e.title + " " + e.choice;
+    if (/เสียชีวิต|ล้มละลาย|แต่งงาน|คลอด|กำเนิด|มีลูก|ถูกจับ|รับโทษ/.test(text)) return 4;
+    if (/เลื่อน|ย้าย|ต่างแดน|มะเร็ง|วินิจฉัย|อุบัติเหตุ|ไฟไหม้/.test(text)) return 3;
+    if (/งานแรก|เกษียณ|ซื้อบ้าน|บ้านหลังแรก|มหาวิทยาลัย/.test(text)) return 2;
+    return 0;
+  };
+  const picked = life.history
+    .map((entry, index) => ({ entry, index, score: importance(entry) }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .slice(0, 6)
+    .sort((a, b) => a.index - b.index)
+    .map((x) => x.entry);
   const birth: Entry = {
     id: "birth",
     age: 0,

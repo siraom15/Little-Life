@@ -11,11 +11,17 @@ export function raidChance(life: Life) {
   if (heat <= 0) return 0;
   if (heat >= 100) return 1;
   const cfg = gameConfig.dark;
-  return Math.min(cfg.maxRaidChance, cfg.baseRaidChance + (life.journey!.policeExposureYears || 0) * cfg.raidIncreasePerYear + heat / 100 * cfg.heatRaidWeight);
+  return Math.min(
+    cfg.maxRaidChance,
+    cfg.baseRaidChance +
+      (life.journey!.policeExposureYears || 0) * cfg.raidIncreasePerYear +
+      (heat / 100) * cfg.heatRaidWeight,
+  );
 }
 export function agePoliceExposure(life: Life) {
   if (life.simulation!.economy!.heat <= 0) life.journey!.policeExposureYears = 0;
-  else if (!isImprisoned(life)) life.journey!.policeExposureYears = (life.journey!.policeExposureYears || 0) + 1;
+  else if (!isImprisoned(life))
+    life.journey!.policeExposureYears = (life.journey!.policeExposureYears || 0) + 1;
 }
 export function policeRaid(life: Life) {
   return event(
@@ -47,7 +53,7 @@ export function policeRaid(life: Life) {
         },
       ),
       option(
-        "ยื่นส่วยให้ตำรวจในเกม",
+        "ยื่นส่วยให้ตำรวจ",
         "จ่าย 15,000 · สำเร็จลดความร้อน 40 · พลาดจำคุก 5 ปี ปรับ 80,000",
         { heat: -40 },
         {

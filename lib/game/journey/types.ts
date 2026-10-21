@@ -77,7 +77,12 @@ export type Journey = {
   hasWorked: boolean;
   retirement: string;
   completedMissions: string[];
-  milestonesScore?: { healthyYears: number; marriedYears: number; peakRank: number };
+  milestonesScore?: {
+    healthyYears: number;
+    marriedYears: number;
+    peakRank: number;
+    promotionCount?: number;
+  };
   health: {
     severe?: {
       id: "cancer" | "alzheimer" | "heart" | "stroke" | "kidney";

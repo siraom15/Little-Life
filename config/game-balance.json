@@ -1,5 +1,5 @@
 {
-  "revision": 10,
+  "revision": 11,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
@@ -249,5 +249,35 @@
     "minimumBill": 120000,
     "healthDamage": 45,
     "recoveryYears": 2
+  },
+  "lottery": {
+    "prize": 8000000,
+    "chance": 0.02
+  },
+  "choiceCredit": {
+    "bankruptcyThreshold": 350000
+  },
+  "abroad": {
+    "offerChance": 0.12,
+    "countries": {
+      "ญี่ปุ่น": {
+        "salaryMultiplier": 2.2,
+        "livingCost": 120000,
+        "moveCost": 45000,
+        "job": "japan-tech"
+      },
+      "ออสเตรเลีย": {
+        "salaryMultiplier": 2.5,
+        "livingCost": 180000,
+        "moveCost": 65000,
+        "job": "australia-care"
+      },
+      "เยอรมนี": {
+        "salaryMultiplier": 2.4,
+        "livingCost": 150000,
+        "moveCost": 55000,
+        "job": "germany-engineer"
+      }
+    }
   }
 }

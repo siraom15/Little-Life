@@ -22,7 +22,7 @@ function fixture() {
   return life;
 }
 test("every job has three distinct progression choices, proper ranks and retirement routes", () => {
-  assert.equal(Object.keys(careerPaths).length, 20);
+  assert.equal(Object.keys(careerPaths).length, 23);
   for (const id of Object.keys(careerPaths)) {
     const l = fixture();
     l.journey!.career = { id, rank: 1, since: 22 };

@@ -12,6 +12,14 @@ const paths: [string, string[], string[]][] = [
   ["ศิลปะ", ["designer"], ["chef", "actor"]],
 ];
 export function educationBonus(life: Life, career: string) {
+  career =
+    (
+      {
+        "japan-tech": "technician",
+        "australia-care": "nurse",
+        "germany-engineer": "engineer",
+      } as Record<string, string>
+    )[career] || career;
   const path = paths.find(([name]) => life.journey!.school.includes(name));
   return !path
     ? 0

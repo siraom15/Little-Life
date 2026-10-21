@@ -52,7 +52,7 @@ export const ventures: Venture[] = [
   {
     id: "lottery",
     label: "ซื้อหวย 1 ใบ",
-    detail: "80 บาท · โอกาสถูกรางวัล 2% รับ 4,000 · อีก 98% เสียค่าหวย",
+    detail: "80 บาท · โอกาสถูกรางวัล 2% รับ 8,000,000 · อีก 98% เสียค่าหวย",
     icon: "ticket",
     cost: 80,
     group: "ลงทุน",
@@ -119,7 +119,7 @@ export const ventures: Venture[] = [
   },
   {
     id: "bribe",
-    label: "ติดสินบนตำรวจในเกม",
+    label: "ติดสินบนตำรวจ",
     detail: "โอกาส 50% ลดความเสี่ยง 15 · ล้มเหลวเพิ่ม 30 · ไม่ล้างคดี",
     icon: "danger",
     cost: 20000,

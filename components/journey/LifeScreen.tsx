@@ -1,3 +1,6 @@
+import ChoiceLoanDialog from "./ChoiceLoanDialog";
+import { choiceCredit } from "@/lib/game/journey/choice-credit";
+import { encodeLife } from "@/lib/game";
 import { raidChance } from "@/lib/game/journey/police";
 import { diseaseLabel } from "@/lib/game/journey/diseases";
 import { positionTitle } from "@/lib/game/journey/career-paths";
@@ -20,21 +23,25 @@ export default function LifeScreen({
   setLife,
   shared,
   restart,
+  onSelf,
 }: {
   life: Life;
   setLife: React.Dispatch<React.SetStateAction<Life | null>>;
   shared: boolean;
   restart: () => void;
+  onSelf: () => void;
 }) {
   const j = life.journey!,
     event = j.pending,
     career = j.career;
   const [expanded, setExpanded] = useState(false);
+  const [loan, setLoan] = useState<number | null>(null);
+  const credit = loan !== null && event ? choiceCredit(life, event.choices[loan]) : null;
   useEffect(() => setExpanded(false), [event?.id]);
-  if (isImprisoned(life))
+  if (!life.done && isImprisoned(life))
     return (
       <section className="prison-wait">
-        <span className="prison-label">LOCKED · รับโทษ</span>
+        <span className="prison-label">รับโทษ</span>
         <h2>
           อีก {life.simulation!.economy!.prisonUntil - life.age} ปี จะได้กลับไปเริ่มใหม่
         </h2>
@@ -56,7 +63,8 @@ export default function LifeScreen({
       )}
       {!life.done && life.simulation!.economy!.heat > 0 && (
         <div className="heat-indicator">
-          ⚠ ตำรวจจับตา {life.simulation!.economy!.heat}/100 · ตรวจค้น {Math.round(raidChance(life)*100)}%
+          ⚠ ตำรวจจับตา {life.simulation!.economy!.heat}/100 · ตรวจค้น{" "}
+          {Math.round(raidChance(life) * 100)}%
           <small>ฐานโอกาสเพิ่มทุกปีที่ยังถูกจับตา · เต็ม 100 จะถูกตรวจค้นแน่นอน</small>
         </div>
       )}
@@ -76,6 +84,12 @@ export default function LifeScreen({
             </p>
           )}
           <FuneralSummary life={life} />
+          <a
+            className="primary-action"
+            href={"/ending/#life=" + encodeURIComponent(encodeLife(life))}
+          >
+            เปิดสมุดความทรงจำ →
+          </a>
           <button className="primary-action" onClick={restart}>
             เริ่มอีกชีวิต
           </button>
@@ -92,18 +106,21 @@ export default function LifeScreen({
               (choice, index) => {
                 const chance = successChance(life, choice),
                   cost = choice.cost || 0,
-                  locked = storyChoiceLocked(life, choice);
+                  locked = storyChoiceLocked(life, choice),
+                  borrowing = choiceCredit(life, choice);
                 return (
                   <button
                     key={index}
                     className="story-choice"
-                    disabled={!!locked}
+                    disabled={!!locked && !borrowing}
                     onClick={() =>
-                      setLife((current) =>
-                        current
-                          ? journeyAction(current, { type: "choice", index })
-                          : current,
-                      )
+                      borrowing
+                        ? setLoan(index)
+                        : setLife((current) =>
+                            current
+                              ? journeyAction(current, { type: "choice", index })
+                              : current,
+                          )
                     }
                   >
                     <span className="story-icon">
@@ -124,7 +141,13 @@ export default function LifeScreen({
                       {choice.success.money ? (
                         <MoneyChange amount={choice.success.money} />
                       ) : null}
-                      {locked && <small className="chance-explanation">{locked}</small>}
+                      {borrowing ? (
+                        <small className="borrow-label">
+                          กู้เพิ่ม ฿{baht(borrowing.amount)} · ต้องยืนยันก่อน
+                        </small>
+                      ) : (
+                        locked && <small className="chance-explanation">{locked}</small>
+                      )}
                     </span>
                   </button>
                 );
@@ -187,22 +210,25 @@ export default function LifeScreen({
           ))}
         </div>
       </details>
-      <details className="simple-details">
-        <summary>
-          บันทึกชีวิต <span>{life.history.length} เรื่อง</span>
-        </summary>
-        <ol className="compact-history">
-          {[...life.history].reverse().map((entry, index) => (
-            <li key={entry.id + index}>
-              <b>
-                {entry.age} ปี · {entry.title}
-              </b>
-              <p>{entry.choice}</p>
-              <small>{entry.detail}</small>
-            </li>
-          ))}
-        </ol>
-      </details>
+      <button className="finance-action" onClick={onSelf}>
+        ดูตัวฉันและทักษะ →
+      </button>
+      {credit && loan !== null && (
+        <ChoiceLoanDialog
+          label={event!.choices[loan].label}
+          credit={credit}
+          onCancel={() => setLoan(null)}
+          onConfirm={() => {
+            const index = loan;
+            setLoan(null);
+            setLife((current) =>
+              current
+                ? journeyAction(current, { type: "choice", index, borrow: true })
+                : current,
+            );
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -5,15 +5,23 @@ import { gameConfig } from "../config.ts";
 import type { Life } from "../../types.ts";
 import type { StoryEvent, Skill } from "../types.ts";
 import { event, option } from "./builders.ts";
+import { overseasJobs } from "../catalog.ts";
 import { jobs, riskyJobs } from "../catalog.ts";
 export function careerOffer(life: Life, kind: "first" | "offer" | "loss" = "offer") {
   const choices = jobs
-    .filter((job) => job.id !== "politician")
+    .filter(
+      (job) =>
+        job.id !== "politician" &&
+        (!overseasJobs.some((o) => o.id === job.id) ||
+          overseasJobs.some((o) => o.id === job.id && o.country === life.location)),
+    )
     .map((job) =>
       option(
         job.label,
         "เงินเดือนเริ่มต้น " +
-          Math.round(job.income / 12).toLocaleString("th-TH") +
+          Math.round(careerIncome(job.id, 0, life.location) / 12).toLocaleString(
+            "th-TH",
+          ) +
           " บาท" +
           (educationBonus(life, job.id)
             ? " · การเรียนตรงสาย +" + educationBonus(life, job.id) + " จุดเปอร์เซ็นต์"
@@ -66,7 +74,7 @@ export function promotionEvent(life: Life) {
     path = careerPaths[career.id],
     max = career.rank >= 3;
   const heat = !max && riskyJobs.has(career.id) ? gameConfig.dark.promotionHeat : 0;
-  const nextIncome = careerIncome(career.id, Math.min(3, career.rank + 1));
+  const nextIncome = careerIncome(career.id, Math.min(3, career.rank + 1), life.location);
   return event(
     life,
     "promotion-" + life.age,

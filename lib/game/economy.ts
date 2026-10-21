@@ -1,3 +1,4 @@
+import { gameConfig } from "./journey/config.ts";
 import { careers } from "./careers.ts";
 import type { Economy, Life } from "./types.ts";
 import { randomAt } from "./random.ts";
@@ -90,9 +91,11 @@ export function applyVenture(life: Life, id: string): boolean {
       e.policy = "none";
       break;
     case "lottery": {
-      const won = randomAt(life.seed, life.age, 31) < 0.02;
-      life.money += won ? 4000 : 0;
-      result = won ? "ถูกรางวัล รับ 4,000 บาท" : "ไม่ถูกรางวัล เสียค่าหวย 80 บาท";
+      const won = randomAt(life.seed, life.age, 31) < gameConfig.lottery.chance;
+      life.money += won ? gameConfig.lottery.prize : 0;
+      result = won
+        ? "ถูกรางวัล รับ " + gameConfig.lottery.prize.toLocaleString("th-TH") + " บาท"
+        : "ไม่ถูกรางวัล เสียค่าหวย 80 บาท";
       break;
     }
     case "volunteer":

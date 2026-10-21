@@ -191,6 +191,29 @@ export const careerPaths: Record<
     mission: "ธุรกิจเกษตร 70",
   },
 };
+for (const [id, source, titles] of [
+  [
+    "japan-tech",
+    "technician",
+    [
+      "ช่างระบบในญี่ปุ่น",
+      "ช่างอาวุโสในญี่ปุ่น",
+      "หัวหน้าระบบอัตโนมัติ",
+      "ผู้เชี่ยวชาญระบบอัตโนมัติ",
+    ],
+  ],
+  [
+    "australia-care",
+    "nurse",
+    ["ผู้ดูแลในออสเตรเลีย", "ผู้ดูแลอาวุโส", "หัวหน้าศูนย์ดูแล", "ผู้อำนวยการศูนย์ดูแล"],
+  ],
+  [
+    "germany-engineer",
+    "engineer",
+    ["วิศวกรในเยอรมนี", "วิศวกรอาวุโส", "หัวหน้าโครงการพลังงาน", "ผู้อำนวยการวิศวกรรม"],
+  ],
+] as [string, string, string[]][])
+  careerPaths[id] = { ...careerPaths[source], titles };
 export function positionTitle(id: string, rank: number) {
   return careerPaths[id]?.titles[Math.min(rank, 3)] || "ผู้ชำนาญงาน";
 }

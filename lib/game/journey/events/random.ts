@@ -151,7 +151,7 @@ export function randomStory(life: Life): StoryEvent {
         life,
         "scam-" + life.age,
         "ข้อเสนอรวยเร็วเข้ามา",
-        "คนรู้จักชวนลงเงิน ผลลัพธ์ในเกมมีความเสี่ยงสูง เงินที่จ่ายเสียไปแม้ไม่สำเร็จ",
+        "คนรู้จักชวนลงเงิน มีความเสี่ยงสูง เงินที่จ่ายเสียไปแม้ไม่สำเร็จ",
         [
           option(
             "เสี่ยงลงเงินเต็มที่",
@@ -261,11 +261,11 @@ export function randomStory(life: Life): StoryEvent {
         [
           option(
             "สมัครงานที่ญี่ปุ่น",
-            "จ่ายเตรียมตัว 15,000 · สำเร็จย้ายไปญี่ปุ่นและรับงานนักขาย",
-            { location: "ญี่ปุ่น", career: "sales", skills: { communication: 10 } },
+            "จ่ายเตรียมตัว 45,000 · สำเร็จย้ายไปญี่ปุ่นและรับงานช่างระบบอัตโนมัติ",
+            { location: "ญี่ปุ่น", career: "japan-tech", skills: { communication: 10 } },
             {
               icon: "plane",
-              cost: 15000,
+              cost: 45000,
               chance: { base: 25, skill: "communication", stat: "skill" },
               failure: { skills: { communication: 3 } },
             },

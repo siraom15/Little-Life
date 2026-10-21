@@ -1430,3 +1430,108 @@ meter::-webkit-meter-optimum-value {
     animation: none;
   }
 }
+
+/* Compact navigation and pixel motion. */
+.bottom-nav {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+button:disabled,
+.story-choice:disabled {
+  background: #1b2532;
+  border-color: #384250;
+  color: #7d8998;
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+  box-shadow: none;
+}
+button:disabled * {
+  color: inherit;
+}
+button:not(:disabled):active,
+a.primary-action:active {
+  transform: translate(2px, 3px);
+  box-shadow: none;
+}
+.story-choice:not(:disabled):hover {
+  border-color: #69d9ee;
+  background: #142c43;
+}
+.borrow-label {
+  color: #ffd479 !important;
+}
+.loan-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #000c;
+  padding: 20px;
+}
+.loan-dialog {
+  width: min(100%, 420px);
+  max-height: 90dvh;
+  overflow: auto;
+  border: 3px solid #69c9e3;
+  box-shadow: 7px 7px 0 #000;
+  animation: pixel-arrive 0.2s steps(4);
+}
+.start-scene {
+  width: 100%;
+  max-width: 400px;
+  border: 3px solid #477e99;
+  box-shadow: 6px 6px 0 #080e19;
+}
+.pixel-cloud {
+  animation: cloud-drift 8s ease-in-out infinite alternate;
+}
+.start-cast {
+  animation: cast-hop 2s steps(2) infinite;
+}
+.current-event,
+.self-screen,
+.tab-history .simple-card {
+  animation: pixel-arrive 0.2s steps(4);
+}
+a.primary-action {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+@keyframes cloud-drift {
+  to {
+    transform: translateX(12px);
+  }
+}
+@keyframes cast-hop {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes pixel-arrive {
+  from {
+    opacity: 0.4;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.loan-dialog::backdrop {
+  background: #000c;
+}
+dialog.loan-dialog {
+  margin: auto;
+  color: var(--text, #e4effa);
+}

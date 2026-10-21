@@ -1,5 +1,6 @@
 "use client";
-import { encodeLife } from "@/lib/game";
+import HistoryScreen from "../journey/HistoryScreen";
+import StartScene from "../scene/StartScene";
 import ThemeMusic from "./ThemeMusic";
 import { randomCharacterName } from "@/lib/game/names";
 import MoneyChange from "../journey/MoneyChange";
@@ -11,6 +12,7 @@ import { useGameClock } from "@/hooks/useGameClock";
 import { journeyAction } from "@/lib/game";
 import { baht } from "@/lib/format";
 import {
+  BookOpen,
   UserRound,
   Users,
   Wallet,
@@ -30,8 +32,10 @@ import FinanceScreen from "../journey/FinanceScreen";
 export default function LifeGame() {
   const game = useLifeGame(),
     { life, setLife, shared, modal, setModal, input, ready, name, setName, start } = game;
-  const [tab, setTab] = useState<"life" | "family" | "money" | "self">("life");
-  const imprisoned = !!life && isImprisoned(life);
+  const [tab, setTab] = useState<"life" | "family" | "money" | "self" | "history">(
+    "life",
+  );
+  const imprisoned = !!life && !life.done && isImprisoned(life);
   const clock = useGameClock(life, setLife, shared || !!modal || tab !== "life", shared);
   useEffect(() => {
     setTab("life");
@@ -43,10 +47,7 @@ export default function LifeGame() {
       clock.setRunning(true);
     }
   }, [imprisoned]);
-  useEffect(() => {
-    if (ready && life?.done && !life.simulation?.notice)
-      location.replace("/ending/#life=" + encodeURIComponent(encodeLife(life)));
-  }, [ready, life]);
+
   return (
     <div className="journey-app">
       <header className="compact-header">
@@ -82,7 +83,7 @@ export default function LifeGame() {
         <main className="start-screen">กำลังเปิดเรื่องราว…</main>
       ) : !life ? (
         <main className="start-screen">
-          <div className="start-mark">✦</div>
+          <StartScene />
           <h1>
             ปล่อยชีวิตเดิน
             <br />
@@ -113,7 +114,6 @@ export default function LifeGame() {
           <button className="finance-action" onClick={() => input.current?.click()}>
             <Upload size={16} /> นำเข้าไฟล์ชีวิต
           </button>
-          <small>กติกาใหม่ · การเงินท้าทาย · เวลาเดินอัตโนมัติ</small>
         </main>
       ) : (
         <>
@@ -157,12 +157,15 @@ export default function LifeGame() {
                     setLife={setLife}
                     shared={shared}
                     restart={() => setModal("restart")}
+                    onSelf={() => setTab("self")}
                   />
                 </div>
               </>
             ) : (
               <div className="journey-scroll">
-                {tab === "family" ? (
+                {tab === "history" ? (
+                  <HistoryScreen life={life} />
+                ) : tab === "family" ? (
                   <FamilyScreen life={life} />
                 ) : tab === "self" ? (
                   <SelfScreen
@@ -186,6 +189,7 @@ export default function LifeGame() {
               { id: "family", label: "คนรอบตัว", Icon: Users },
               { id: "money", label: "การเงิน", Icon: Wallet },
               { id: "self", label: "ตัวฉัน", Icon: UserRound },
+              { id: "history", label: "บันทึก", Icon: BookOpen },
             ].map(({ id, label, Icon }) => (
               <button
                 key={id}

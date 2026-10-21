@@ -33,7 +33,7 @@ export default function SelfScreen({
           <PixelCharacter x={50} y={100} scale={1.8} shirt="#52b8cf" {...appearance} />
         </svg>
         <div>
-          <span className="event-kicker">PLAYER PROFILE</span>
+          <span className="event-kicker">ตัวฉัน</span>
           <h2>{life.name}</h2>
           <p>
             {life.age} ปี · {lifeStage(life.age)} · {appearance.female ? "หญิง" : "ชาย"}
@@ -68,7 +68,7 @@ export default function SelfScreen({
         {j.health.severe && (
           <p className="risk-note">
             {diseaseLabel(life)} · ความเสี่ยงจากโรคปีนี้{" "}
-            {Math.round(seriousDiseaseRisk(life) * 100)}% (กติกาเกม) · รอติดตามการรักษา
+            {Math.round(seriousDiseaseRisk(life) * 100)}% · รอติดตามการรักษา
           </p>
         )}
         <h3>สิ่งที่สร้างมา</h3>
@@ -101,6 +101,8 @@ export default function SelfScreen({
           ภารกิจสำเร็จ {j.completedMissions.length} ·{" "}
           {j.homeless ? "อาศัยข้างถนน" : "มีที่พัก"}
         </p>
+      </section>
+      <section className="simple-card">
         <h3>ตั้งค่าและบันทึก</h3>
         <p>
           {shared

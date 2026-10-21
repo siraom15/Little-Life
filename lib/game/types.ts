@@ -32,6 +32,8 @@ export type Entry = {
   detail: string;
   category: string;
   cause?: string;
+  outcomeSuccess?: boolean;
+  location?: string;
   money: number;
 };
 export type Life = {
@@ -77,7 +79,7 @@ export type LifeNotice = {
 };
 export type SimulationAction =
   | { type: "year" }
-  | { type: "choice"; index: number }
+  | { type: "choice"; index: number; borrow?: true }
   | { type: "ack" }
   | { type: "activity"; activity: Activity }
   | { type: "venture"; id: string }
