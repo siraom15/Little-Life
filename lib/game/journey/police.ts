@@ -4,6 +4,19 @@ import type { Life } from "../types.ts";
 import { event, option } from "./events/builders.ts";
 export const isImprisoned = (life: Life) =>
   !life.done && (life.simulation?.economy?.prisonUntil || 0) > life.age;
+/** Heat 100 is a guaranteed raid; lower heat accumulates exposure over time. */
+export function raidChance(life: Life) {
+  if (life.done || life.age < 18 || isImprisoned(life)) return 0;
+  const heat = life.simulation!.economy!.heat;
+  if (heat <= 0) return 0;
+  if (heat >= 100) return 1;
+  const cfg = gameConfig.dark;
+  return Math.min(cfg.maxRaidChance, cfg.baseRaidChance + (life.journey!.policeExposureYears || 0) * cfg.raidIncreasePerYear + heat / 100 * cfg.heatRaidWeight);
+}
+export function agePoliceExposure(life: Life) {
+  if (life.simulation!.economy!.heat <= 0) life.journey!.policeExposureYears = 0;
+  else if (!isImprisoned(life)) life.journey!.policeExposureYears = (life.journey!.policeExposureYears || 0) + 1;
+}
 export function policeRaid(life: Life) {
   return event(
     life,
@@ -74,6 +87,7 @@ export function imprison(life: Life, years: number, fine = 0) {
     e = life.simulation!.economy!;
   e.prisonUntil = life.age + years;
   e.heat = 0;
+  j.policeExposureYears = 0;
   j.career = null;
   life.job = "ผู้ต้องขัง";
   life.income = 0;

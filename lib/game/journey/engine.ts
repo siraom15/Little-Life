@@ -1,3 +1,4 @@
+import { yearlyAccident } from "./accidents.ts";
 import { yearlyDisease, diseaseEvent, applyDiseaseCare } from "./diseases.ts";
 import { redEnvelopeEvent } from "./events/red-envelope.ts";
 import { randomHealthEvent, healthEventChance, deathCause } from "./health.ts";
@@ -14,6 +15,7 @@ import {
 } from "./asset-stories.ts";
 import { purchaseAsset, removeCar } from "./assets.ts";
 import { isImprisoned, imprison, policeRaid, prisonConfiscation } from "./police.ts";
+import { raidChance, agePoliceExposure } from "./police.ts";
 import { buildFuneral } from "./funeral.ts";
 import type { Life, SimulationAction, Stat } from "../types.ts";
 import type { Outcome, Skill, StoryEvent } from "./types.ts";
@@ -374,6 +376,7 @@ function stepYear(life: Life) {
     life.simulation!.economy!.heat = clamp(
       life.simulation!.economy!.heat + gameConfig.dark.heatPerYear,
     );
+  agePoliceExposure(life);
   if (life.age >= 6 && life.age <= 21) {
     j.skills.academic = clamp(j.skills.academic + 1);
   }
@@ -394,6 +397,14 @@ function stepYear(life: Life) {
     finishLife(life, deathCause(life, healthCause));
     return;
   }
+  const accident = !wasImprisoned ? yearlyAccident(life) : null;
+  if (accident?.fatal) {
+    finishLife(life, accident.cause);
+    j.queue.unshift(life.simulation!.notice!);
+    life.simulation!.notice = accident.notice;
+    return;
+  }
+  if (accident) j.queue.unshift(accident.notice);
   if (stages[life.age] && !j.summaries.includes(life.age)) {
     j.summaries.push(life.age);
     j.queue.push({
@@ -439,12 +450,11 @@ function stepYear(life: Life) {
   const treatment = diseaseEvent(life);
   const scheduled = milestoneEvent(life);
   if (life.simulation!.economy!.prisonUntil <= life.age) {
-    const heat = life.simulation!.economy!.heat;
+    const investigationChance = raidChance(life);
     if (wasImprisoned) trigger(life, careerOffer(life));
     else if (
       life.age >= 18 &&
-      heat > 0 &&
-      randomAt(life.seed, life.age, 136) < (heat / 100) * gameConfig.dark.maxRaidChance
+      randomAt(life.seed, life.age, 136) < investigationChance
     )
       trigger(life, policeRaid(life));
     else if (scheduled && !j.milestones.includes(scheduled.id)) {

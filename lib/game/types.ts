@@ -66,6 +66,7 @@ export type LifeNotice = {
     | "fire"
     | "layoff"
     | "repair";
+  accident?: "car" | "bus" | "collapse" | "drowning" | "electric";
   chart?: { age: number; profit: number }[];
   subject?: string;
   id: string;

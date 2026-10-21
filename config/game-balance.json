@@ -1,12 +1,15 @@
 {
-  "revision": 9,
+  "revision": 10,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
     "heatPerYear": 8,
-    "maxRaidChance": 0.12,
+    "maxRaidChance": 0.95,
     "negotiationSocialWeight": 0.45,
-    "promotionHeat": 15
+    "promotionHeat": 15,
+    "baseRaidChance": 0.08,
+    "raidIncreasePerYear": 0.025,
+    "heatRaidWeight": 0.35
   },
   "family": {
     "supportUntil": 22,
@@ -95,7 +98,11 @@
     "eventChanceOver40": 0.26
   },
   "investment": {
-    "intervals": [2, 3, 5],
+    "intervals": [
+      2,
+      3,
+      5
+    ],
     "fund": {
       "min": 0.88,
       "range": 0.3
@@ -145,9 +152,9 @@
     "maxSeizurePercent": 80
   },
   "diseases": {
-    "incidenceYoung": 0.003,
-    "incidenceAdult": 0.012,
-    "incidenceOlder": 0.035,
+    "incidenceYoung": 0.006,
+    "incidenceAdult": 0.024,
+    "incidenceOlder": 0.07,
     "progression": 0.28,
     "treatedProgression": 0.1,
     "reviewYears": 2,
@@ -155,33 +162,92 @@
       "cancer": {
         "name": "มะเร็ง",
         "canRecover": true,
-        "fatality": [0.008, 0.025, 0.1, 0.32],
-        "recovery": [72, 52, 28, 12]
+        "fatality": [
+          0.008,
+          0.025,
+          0.1,
+          0.32
+        ],
+        "recovery": [
+          72,
+          52,
+          28,
+          12
+        ]
       },
       "alzheimer": {
         "name": "อัลไซเมอร์",
         "canRecover": false,
-        "fatality": [0.004, 0.015, 0.04, 0.13],
-        "recovery": [70, 55, 40, 25]
+        "fatality": [
+          0.004,
+          0.015,
+          0.04,
+          0.13
+        ],
+        "recovery": [
+          70,
+          55,
+          40,
+          25
+        ]
       },
       "heart": {
         "name": "โรคหัวใจ",
         "canRecover": false,
-        "fatality": [0.012, 0.035, 0.09, 0.22],
-        "recovery": [75, 60, 40, 22]
+        "fatality": [
+          0.012,
+          0.035,
+          0.09,
+          0.22
+        ],
+        "recovery": [
+          75,
+          60,
+          40,
+          22
+        ]
       },
       "stroke": {
         "name": "โรคหลอดเลือดสมอง",
         "canRecover": true,
-        "fatality": [0.015, 0.04, 0.12, 0.28],
-        "recovery": [65, 48, 30, 15]
+        "fatality": [
+          0.015,
+          0.04,
+          0.12,
+          0.28
+        ],
+        "recovery": [
+          65,
+          48,
+          30,
+          15
+        ]
       },
       "kidney": {
         "name": "โรคไตเรื้อรัง",
         "canRecover": false,
-        "fatality": [0.005, 0.02, 0.07, 0.2],
-        "recovery": [75, 60, 40, 20]
+        "fatality": [
+          0.005,
+          0.02,
+          0.07,
+          0.2
+        ],
+        "recovery": [
+          75,
+          60,
+          40,
+          20
+        ]
       }
     }
+  },
+  "accidents": {
+    "annualChance": 0.018,
+    "fatalChance": 0.2,
+    "minLossRate": 0.65,
+    "maxLossRate": 0.9,
+    "minimumBill": 120000,
+    "healthDamage": 45,
+    "recoveryYears": 2
   }
 }

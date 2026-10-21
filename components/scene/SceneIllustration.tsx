@@ -1,3 +1,4 @@
+import AccidentScene from "./AccidentScene";
 import WorkRewardScene from "./WorkRewardScene";
 import NoticeScene from "./NoticeScene";
 import { noticeVisual } from "@/lib/game/journey/notice-visual";
@@ -16,6 +17,7 @@ export default function SceneIllustration({
   life: Life;
   kind?: SceneKind;
 }) {
+  if (life.simulation?.notice?.accident) return <AccidentScene life={life} />;
   if (life.done && life.journey?.funeral) return <FuneralScene life={life} />;
   if (isImprisoned(life) || kind === "prison") return <PrisonScene life={life} />;
   if (life.simulation?.notice?.subject?.startsWith("offer-"))

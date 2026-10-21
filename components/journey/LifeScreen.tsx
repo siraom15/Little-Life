@@ -1,3 +1,4 @@
+import { raidChance } from "@/lib/game/journey/police";
 import { diseaseLabel } from "@/lib/game/journey/diseases";
 import { positionTitle } from "@/lib/game/journey/career-paths";
 import MoneyChange from "./MoneyChange";
@@ -55,7 +56,8 @@ export default function LifeScreen({
       )}
       {!life.done && life.simulation!.economy!.heat > 0 && (
         <div className="heat-indicator">
-          ⚠ ตำรวจจับตา {life.simulation!.economy!.heat}/100
+          ⚠ ตำรวจจับตา {life.simulation!.economy!.heat}/100 · ตรวจค้น {Math.round(raidChance(life)*100)}%
+          <small>ฐานโอกาสเพิ่มทุกปีที่ยังถูกจับตา · เต็ม 100 จะถูกตรวจค้นแน่นอน</small>
         </div>
       )}
       {life.done ? (

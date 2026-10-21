@@ -226,3 +226,5 @@
 .ending-details::backdrop {
   background: #020915dd;
 }
+
+.accident-alert{animation:accident-pulse 1.5s steps(2,end) infinite}@keyframes accident-pulse{50%{opacity:.5}}@media(prefers-reduced-motion:reduce){.accident-alert{animation:none}}

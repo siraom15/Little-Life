@@ -68,6 +68,7 @@ export type StoryEvent = Omit<Event, "choices"> & {
 };
 export type Journey = {
   balanceRevision: number;
+  policeExposureYears?: number;
 
   house: OwnedAsset | null;
   car: OwnedAsset | null;

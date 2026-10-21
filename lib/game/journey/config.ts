@@ -18,6 +18,13 @@ for (const [path, value] of Object.entries({
   prisonDeath: balance.life.prisonDeathRisk,
   ...balance.life.mortality,
   raid: balance.dark.maxRaidChance,
+  raidBase: balance.dark.baseRaidChance,
+  raidIncrease: balance.dark.raidIncreasePerYear,
+  accident: balance.accidents.annualChance,
+  accidentDeath: balance.accidents.fatalChance,
+  diseaseYoung: balance.diseases.incidenceYoung,
+  diseaseAdult: balance.diseases.incidenceAdult,
+  diseaseOlder: balance.diseases.incidenceOlder,
   inheritance: balance.family.inheritanceChance,
   parentSaving: balance.family.parentSavingRate,
   spouseDeath: balance.family.spouseDeathChance,
@@ -76,3 +83,5 @@ for (const risk of Object.values(balance.investment.risks)) {
   if (risk.crashChance > 1 || risk.crashLoss > 1)
     throw new Error("Invalid investment risk");
 }
+
+if(balance.accidents.minLossRate>balance.accidents.maxLossRate || balance.accidents.maxLossRate>1 || !Number.isInteger(balance.accidents.recoveryYears)) throw new Error("Invalid accident config");

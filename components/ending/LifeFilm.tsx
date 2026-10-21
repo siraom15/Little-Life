@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import type { Life, SceneKind } from "@/lib/game";
+import { accidentTypes } from "@/lib/game/journey/accidents";
 import { lifeHighlights } from "@/lib/game/journey/achievements";
 import SceneIllustration from "../scene/SceneIllustration";
 export default function LifeFilm({ life, onClose }: { life: Life; onClose: () => void }) {
@@ -87,6 +88,8 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
       visual: "portfolio",
       chart: life.journey!.investment.points.filter((p) => p.age <= frame.age),
     };
+  const accident=accidentTypes.find(a=>frame.id.startsWith("accident-"+a.id+"-"));
+  if(accident) illustration.simulation!.notice={id:frame.id,title:frame.title,text:frame.detail,scene:"hospital",effects:"",accident:accident.id};
   illustration.journey!.house = null;
   illustration.journey!.car = null;
   illustration.journey!.extraCars = [];

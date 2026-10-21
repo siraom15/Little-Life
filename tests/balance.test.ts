@@ -130,14 +130,14 @@ test("assets grant capped annual benefits and destruction preserves outstanding 
   assert.equal(l.journey!.house, null);
   assert.equal(l.journey!.debt, balance);
 });
-test("relationship improves police negotiation and raid cap is below previous rate", () => {
+test("relationship improves police negotiation even with higher raid risk", () => {
   const l = fixture(),
     choice = policeRaid(l).choices[2];
   l.stats.social = 0;
   const low = successChance(l, choice);
   l.stats.social = 100;
   assert.ok(successChance(l, choice) > low);
-  assert.equal(gameConfig.dark.maxRaidChance, 0.12);
+  assert.equal(gameConfig.dark.maxRaidChance, 0.95);
 });
 
 test("prison seizure removes 40–80% net assets once per sentence and queues a prison popup", async () => {
