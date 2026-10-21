@@ -127,6 +127,10 @@ export function financeLocked(life: Life, id: string): string | null {
   if (investmentActions.includes(id) && !j.hasWorked) return "เริ่มลงทุนได้หลังมีงานแรก";
   if (investmentActions.includes(id)) {
     const [action, key, raw] = id.split(":");
+    if (action === "risk")
+      return j.investment.riskChangedAt?.[key as "fund" | "stock" | "crypto"] === life.age
+        ? "เปลี่ยนความเสี่ยงได้ปีละครั้งต่อสินทรัพย์"
+        : null;
     return action === "sell"
       ? investmentValue(life, key) <= 0
         ? "ยังไม่มีสินทรัพย์"

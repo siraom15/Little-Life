@@ -39,6 +39,8 @@ export type Outcome = {
   retirementIncome?: number;
   habit?: "exercise" | "alcohol" | "smoking" | "drugs" | "rehab";
   loseJob?: boolean;
+  diseaseCare?: "standard" | "intensive" | "public" | "support" | "defer";
+  diseaseRecovered?: boolean;
   relationship?: "meet" | "marry" | "child" | "leave" | "repair";
   bond?: number;
   heat?: number;
@@ -53,6 +55,7 @@ export type Outcome = {
 };
 export type StoryChoice = Choice & {
   assetAction?: string;
+  policyAction?: "basic" | "family";
   chance?: { base: number; skill?: Skill; stat?: Stat; statWeight?: number };
   success: Outcome;
   failure?: Outcome;
@@ -73,7 +76,15 @@ export type Journey = {
   hasWorked: boolean;
   retirement: string;
   completedMissions: string[];
+  milestonesScore?: { healthyYears: number; marriedYears: number; peakRank: number };
   health: {
+    severe?: {
+      id: "cancer" | "alzheimer" | "heart" | "stroke" | "kidney";
+      stage: number;
+      diagnosedAt: number;
+      reviewedAt: number;
+      treatedUntil: number;
+    };
     addiction: number;
     alcohol: number;
     smoking: number;
@@ -82,6 +93,8 @@ export type Journey = {
     hospitalUntil: number;
   };
   investment: {
+    risks?: Partial<Record<"fund" | "stock" | "crypto", "low" | "normal" | "high">>;
+    riskChangedAt?: Partial<Record<"fund" | "stock" | "crypto", number>>;
     stock: number;
     deposited: number;
     withdrawn: number;

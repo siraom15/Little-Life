@@ -1,11 +1,13 @@
 import type { Life } from "../types.ts";
 import { randomAt } from "../random.ts";
 import { gameConfig } from "./config.ts";
+export const investmentRiskLevels = ["low", "normal", "high"] as const;
 export const investmentAmounts = [1000, 10000, 100000];
 export const investmentKeys = ["fund", "stock", "crypto"] as const;
 export const investmentActions = investmentKeys.flatMap((k) => [
   ...investmentAmounts.map((n) => "invest:" + k + ":" + n),
   "sell:" + k,
+  ...investmentRiskLevels.map((level) => "risk:" + k + ":" + level),
 ]);
 export function portfolioValue(life: Life) {
   return (
@@ -22,6 +24,21 @@ export function investmentValue(life: Life, key: string) {
 export function invest(life: Life, id: string) {
   const [action, key, raw] = id.split(":"),
     book = life.journey!.investment;
+  if (action === "risk") {
+    (book.risks ??= {})[key as "fund" | "stock" | "crypto"] = raw as
+      "low" | "normal" | "high";
+    (book.riskChangedAt ??= {})[key as "fund" | "stock" | "crypto"] = life.age;
+    life.history.push({
+      id: "risk-" + life.simulation!.actions.length,
+      age: life.age,
+      title: "ปรับความเสี่ยงลงทุน",
+      choice: gameConfig.investment.risks[raw as "low" | "normal" | "high"].label,
+      detail: key + " · มีผลต่อพอร์ตทั้งหมดในสินทรัพย์นี้",
+      category: "การเงิน",
+      money: life.money,
+    });
+    return;
+  }
   const amount = action === "sell" ? investmentValue(life, key) : Number(raw);
   if (action === "sell") {
     life.money += amount;
@@ -57,11 +74,36 @@ export function invest(life: Life, id: string) {
 export function yearlyInvestments(life: Life) {
   const book = life.journey!.investment;
   for (const [i, key] of investmentKeys.entries()) {
-    const cfg = gameConfig.investment[key],
-      value = Math.round(
-        investmentValue(life, key) *
-          (cfg.min + randomAt(life.seed, life.age, 212 + i) * cfg.range),
-      );
+    const cfg = gameConfig.investment[key];
+    const risk = gameConfig.investment.risks[book.risks?.[key] || "normal"];
+    const crash = randomAt(life.seed, life.age, 280 + i) < risk.crashChance;
+    const factor = crash
+      ? 1 - risk.crashLoss
+      : Math.max(
+          0,
+          1 +
+            (cfg.min + randomAt(life.seed, life.age, 212 + i) * cfg.range - 1) *
+              risk.spread,
+        );
+    const value = Math.round(investmentValue(life, key) * factor);
+    if (crash && investmentValue(life, key) > 0)
+      life.journey!.queue.push({
+        id: "market-crash-" + key + "-" + life.age,
+        title: "ตลาดร่วงแรง!",
+        text:
+          key +
+          " สูญมูลค่า " +
+          Math.round(risk.crashLoss * 100) +
+          "% ตามแผน " +
+          risk.label,
+        scene: "gift",
+        visual: "portfolio",
+        chart: [
+          { age: life.age - 1, profit: 0 },
+          { age: life.age, profit: value - investmentValue(life, key) },
+        ],
+        effects: "มูลค่าที่เสียไปไม่คืนเมื่อเปลี่ยนแผน",
+      });
     if (key === "stock") book.stock = value;
     else life.simulation!.economy![key] = value;
   }

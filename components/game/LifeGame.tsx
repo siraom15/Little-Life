@@ -1,4 +1,5 @@
 "use client";
+import { encodeLife } from "@/lib/game";
 import ThemeMusic from "./ThemeMusic";
 import { randomCharacterName } from "@/lib/game/names";
 import MoneyChange from "../journey/MoneyChange";
@@ -42,6 +43,10 @@ export default function LifeGame() {
       clock.setRunning(true);
     }
   }, [imprisoned]);
+  useEffect(() => {
+    if (ready && life?.done && !life.simulation?.notice)
+      location.replace("/ending/#life=" + encodeURIComponent(encodeLife(life)));
+  }, [ready, life]);
   return (
     <div className="journey-app">
       <header className="compact-header">

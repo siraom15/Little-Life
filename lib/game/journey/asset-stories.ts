@@ -1,10 +1,18 @@
 import type { Life } from "../types.ts";
 import type { StoryChoice } from "./types.ts";
+import { ventureLockedReason } from "../economy.ts";
+import { policyTerms } from "../ventures.ts";
 import { gameConfig } from "./config.ts";
 import { randomAt } from "../random.ts";
 import { allCars, assetCatalog, assetLocked, quoteAsset } from "./assets.ts";
 import { event, option } from "./events/builders.ts";
 export function storyChoiceLocked(life: Life, choice: StoryChoice): string | null {
+  if (choice.policyAction) {
+    const copy = structuredClone(life);
+    copy.journey!.pending = null;
+    copy.simulation!.notice = null;
+    return ventureLockedReason(copy, choice.policyAction);
+  }
   if (choice.assetAction) {
     const copy = structuredClone(life);
     copy.journey!.pending = null;
@@ -84,7 +92,7 @@ export function assetOffer(life: Life, kind: "house" | "car") {
   return event(
     life,
     "offer-" + kind + "-" + life.age,
-    "โอกาสเป็นเจ้าของ" + model.name,
+    "เหนื่อยจากงาน… ให้รางวัลตัวเองด้วย" + model.name + "ไหม?",
     "ราคา ฿" +
       model.price.toLocaleString("th-TH") +
       " · ทุกปี สุขภาพ +" +
@@ -151,4 +159,51 @@ export function assetStory(life: Life) {
   if (kind && randomAt(life.seed, life.age, 183) < gameConfig.assets.offerChance)
     return assetOffer(life, kind);
   return null;
+}
+
+export function workRewardEvent(life: Life) {
+  if (!life.journey!.career || life.age < 18) return null;
+  const kinds: ("house" | "car" | "insurance")[] = [];
+  if (!life.journey!.house) kinds.push("house");
+  if (allCars(life).length < 3) kinds.push("car");
+  if (life.simulation!.economy!.policy === "none" && life.age <= 65)
+    kinds.push("insurance");
+  const kind = kinds[Math.floor(randomAt(life.seed, life.age, 285) * kinds.length)];
+  if (!kind) return null;
+  if (kind !== "insurance") return assetOffer(life, kind);
+  return event(
+    life,
+    "offer-insurance-" + life.age,
+    "ทำงานหนักทุกวัน… อยากดูแลคนข้างหลังไหม?",
+    "หลังเลิกงาน คุณเริ่มคิดถึงความมั่นคง ประกันชีวิตจ่ายให้ผู้รับผลประโยชน์เมื่อเสียชีวิต ไม่คุ้มครองค่ารักษาโรค",
+    [
+      option(
+        "ประกันชีวิตพื้นฐาน",
+        "เบี้ย 3,000/ปี · เงินให้คนข้างหลัง 150,000",
+        {},
+        { icon: "shield", cost: policyTerms.basic.premium, policyAction: "basic" },
+      ),
+      option(
+        "ประกันชีวิตครอบครัว",
+        "เบี้ย 8,000/ปี · เงินให้คนข้างหลัง 500,000",
+        {},
+        { icon: "users", cost: policyTerms.family.premium, policyAction: "family" },
+      ),
+      option(
+        "คุยกับครอบครัวก่อน",
+        "ความสัมพันธ์ +4 ยังไม่ซื้อ",
+        { stats: { social: 4 } },
+        { icon: "heart" },
+      ),
+      option(
+        "กลับบ้านพักก่อน",
+        "สุขภาพ +3 ยังไม่ซื้อ",
+        { stats: { health: 3 } },
+        { icon: "moon" },
+      ),
+      option("ยังไม่ทำประกัน", "เก็บเงินไว้ ไม่มีความคุ้มครอง", {}, { icon: "wallet" }),
+    ],
+    "ความมั่นคง",
+    "home",
+  );
 }

@@ -62,3 +62,17 @@ if (
   balance.prison.maxSeizurePercent > 100
 )
   throw new Error("Invalid prison seizure range");
+
+for (const model of Object.values(balance.diseases.models)) {
+  if (
+    model.fatality.length !== 4 ||
+    model.recovery.length !== 4 ||
+    model.fatality.some((n) => n > 1) ||
+    model.recovery.some((n) => n > 100)
+  )
+    throw new Error("Invalid disease model");
+}
+for (const risk of Object.values(balance.investment.risks)) {
+  if (risk.crashChance > 1 || risk.crashLoss > 1)
+    throw new Error("Invalid investment risk");
+}

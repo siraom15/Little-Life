@@ -28,7 +28,9 @@ export function useLifeGame() {
       enabled = readAutosavePreference();
       setAuto(enabled);
       const hash = new URLSearchParams(location.hash.slice(1));
-      if (hash.has("life")) {
+      if (hash.has("new")) {
+        setLife(null);
+      } else if (hash.has("life")) {
         const imported = decodeLife(hash.get("life") || "");
         if (imported?.version === 8) {
           setLife(imported);

@@ -1,3 +1,4 @@
+import WorkRewardScene from "./WorkRewardScene";
 import NoticeScene from "./NoticeScene";
 import { noticeVisual } from "@/lib/game/journey/notice-visual";
 import LifeDetails from "./LifeDetails";
@@ -17,6 +18,8 @@ export default function SceneIllustration({
 }) {
   if (life.done && life.journey?.funeral) return <FuneralScene life={life} />;
   if (isImprisoned(life) || kind === "prison") return <PrisonScene life={life} />;
+  if (life.simulation?.notice?.subject?.startsWith("offer-"))
+    return <WorkRewardScene life={life} />;
   if (noticeVisual(life.simulation?.notice)) return <NoticeScene life={life} />;
   const appearance = characterAppearance(life);
   const newborn = life.simulation?.notice?.id.startsWith("new-child-")

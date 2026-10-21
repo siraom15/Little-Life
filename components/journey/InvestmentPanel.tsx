@@ -7,6 +7,8 @@ import {
   investmentKeys,
   investmentValue,
 } from "@/lib/game/journey/investments";
+import { gameConfig } from "@/lib/game/journey/config";
+import { investmentRiskLevels } from "@/lib/game/journey/investments";
 import MoneyChange from "./MoneyChange";
 export default function InvestmentPanel({
   life,
@@ -26,6 +28,39 @@ export default function InvestmentPanel({
             {["กองทุน", "หุ้น", "คริปโต"][i]} · ฿
             {investmentValue(life, key).toLocaleString("th-TH")}
           </strong>
+          <div className="risk-options" role="group" aria-label={"ความเสี่ยง " + key}>
+            {investmentRiskLevels.map((level) => {
+              const cfg = gameConfig.investment.risks[level],
+                model = gameConfig.investment[key],
+                id = "risk:" + key + ":" + level;
+              return (
+                <button
+                  key={level}
+                  aria-pressed={
+                    (life.journey!.investment.risks?.[key] || "normal") === level
+                  }
+                  disabled={shared || !!financeLocked(life, id)}
+                  onClick={() =>
+                    setLife((current) =>
+                      current ? journeyAction(current, { type: "venture", id }) : current,
+                    )
+                  }
+                >
+                  {cfg.label}
+                  <small>
+                    ปกติ {Math.round((model.min - 1) * cfg.spread * 100)}% ถึง +
+                    {Math.round((model.min + model.range - 1) * cfg.spread * 100)}%
+                  </small>
+                  <small>
+                    ตลาดร่วง {cfg.crashChance * 100}%/ปี · เสีย {cfg.crashLoss * 100}%
+                  </small>
+                </button>
+              );
+            })}
+          </div>
+          <small>
+            มีผลกับยอดทั้งหมด · เปลี่ยนได้ปีละครั้ง · ความผันผวนสูงเพิ่มทั้งกำไรและขาดทุน
+          </small>
           <div className="investment-buttons">
             {investmentAmounts.map((amount) => {
               const id = "invest:" + key + ":" + amount;

@@ -1,3 +1,4 @@
+import { diseaseLabel } from "@/lib/game/journey/diseases";
 import { positionTitle } from "@/lib/game/journey/career-paths";
 import MoneyChange from "./MoneyChange";
 import { storyChoiceLocked } from "@/lib/game/journey/asset-stories";
@@ -49,6 +50,9 @@ export default function LifeScreen({
     );
   return (
     <div className="life-content">
+      {!life.done && j.health.severe && (
+        <p className="risk-note">♥ {diseaseLabel(life)} · ติดตามอาการทุก 2 ปี</p>
+      )}
       {!life.done && life.simulation!.economy!.heat > 0 && (
         <div className="heat-indicator">
           ⚠ ตำรวจจับตา {life.simulation!.economy!.heat}/100

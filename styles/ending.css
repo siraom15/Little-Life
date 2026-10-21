@@ -1,0 +1,228 @@
+.ending-page {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at top, #193449, #050a12 70%);
+  color: #ebf4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  gap: 10px;
+  font-family: Sarabun, Tahoma, sans-serif;
+}
+.ending-card {
+  margin: 0;
+  width: min(100%, 460px, calc((100svh - 132px) * 0.66667));
+  filter: drop-shadow(8px 8px 0 #0008);
+}
+.ending-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ending-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 460px;
+}
+.ending-page button,
+.ending-actions a {
+  background: #18384d;
+  color: #f4f1d9;
+  border: 2px solid #5f9db5;
+  border-radius: 0;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 14px;
+  box-shadow: 3px 3px 0 #02060b;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ending-page button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+.ending-page button:focus-visible {
+  outline: 3px solid #ffcf58;
+  outline-offset: 3px;
+}
+.ending-page button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.ending-toast {
+  position: fixed;
+  bottom: 90px;
+  background: #132d40;
+  border: 2px solid #d5be7b;
+  padding: 12px;
+  max-width: 90%;
+  z-index: 20;
+}
+.ending-details {
+  position: fixed;
+  inset: 20px;
+  max-width: 500px;
+  margin: auto;
+  overflow: auto;
+  background: #0b1c2c;
+  border: 3px solid #7ba9bc;
+  z-index: 10;
+  padding: 20px;
+}
+.ending-details article {
+  border-top: 1px solid #34516b;
+  padding: 12px 0;
+}
+.ending-details button {
+  float: right;
+}
+.ending-share {
+  position: fixed;
+  bottom: 10px;
+  background: #142d42;
+  padding: 12px;
+  width: min(94%, 460px);
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+.ending-share label {
+  min-width: 0;
+  flex: 1;
+}
+.ending-share input {
+  display: block;
+  width: 100%;
+  color: #eee;
+  background: #071421;
+  padding: 8px;
+}
+.life-film {
+  width: min(100%, 480px);
+  min-height: min(800px, 95svh);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+.life-film header,
+.life-film nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+}
+.life-film header span {
+  color: #e6c477;
+  font-size: 13px;
+}
+.film-frame {
+  text-align: center;
+  animation: memory-in 0.7s steps(8, end);
+}
+.film-frame svg {
+  width: 100%;
+  border: 3px solid #506b82;
+  box-shadow: 6px 6px 0 #000;
+}
+.film-frame h1 {
+  font-size: 24px;
+  margin: 14px 0 8px;
+}
+.film-frame p {
+  font-size: 20px;
+  color: #f1d28c;
+}
+.film-frame small {
+  display: block;
+  color: #b6c9d8;
+  max-height: 150px;
+  overflow: auto;
+}
+.film-age {
+  display: block;
+  margin-bottom: 14px;
+  color: #8cddda;
+}
+.film-progress {
+  display: flex;
+  gap: 4px;
+}
+.film-progress button {
+  height: 8px;
+  flex: 1;
+  padding: 0;
+  border: 0;
+  background: #294155;
+  box-shadow: none;
+}
+.film-progress button[aria-current] {
+  background: #e2c269;
+}
+.risk-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 10px 0;
+}
+.risk-options button {
+  border: 2px solid #345367;
+  border-radius: 0;
+  background: #0c1c2c;
+  color: #cee0e8;
+  padding: 8px 4px;
+  font: inherit;
+  font-size: 14px;
+}
+.risk-options button[aria-pressed="true"] {
+  border-color: #ffcf58;
+  background: #233e48;
+  color: #ffdf84;
+}
+.risk-options small {
+  display: block;
+  font-size: 11px;
+}
+.reward-thought {
+  animation: thought 2s steps(3, end) infinite;
+}
+@keyframes memory-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes thought {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-frame,
+  .reward-thought {
+    animation: none;
+  }
+}
+@media (max-height: 550px) {
+  .ending-page {
+    justify-content: flex-start;
+  }
+  .ending-card {
+    width: min(95%, 340px);
+  }
+}
+.ending-details {
+  color: #ebf4f6;
+  width: calc(100% - 40px);
+  max-height: calc(100svh - 40px);
+}
+.ending-details::backdrop {
+  background: #020915dd;
+}

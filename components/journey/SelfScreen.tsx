@@ -1,3 +1,4 @@
+import { diseaseLabel, seriousDiseaseRisk } from "@/lib/game/journey/diseases";
 import type { Life } from "@/lib/game";
 import { lifeStage, characterAppearance } from "@/lib/game/appearance";
 import { assetCatalog, allCars } from "@/lib/game/journey/assets";
@@ -64,6 +65,12 @@ export default function SelfScreen({
         </p>
       </section>
       <section className="simple-card">
+        {j.health.severe && (
+          <p className="risk-note">
+            {diseaseLabel(life)} · ความเสี่ยงจากโรคปีนี้{" "}
+            {Math.round(seriousDiseaseRisk(life) * 100)}% (กติกาเกม) · รอติดตามการรักษา
+          </p>
+        )}
         <h3>สิ่งที่สร้างมา</h3>
         <p>
           บ้าน:{" "}

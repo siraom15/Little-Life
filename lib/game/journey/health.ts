@@ -1,3 +1,4 @@
+import { seriousDiseaseRisk, diseaseLabel } from "./diseases.ts";
 import { extraStories } from "./events/extra-stories.ts";
 import type { Life } from "../types.ts";
 import { randomAt } from "../random.ts";
@@ -117,6 +118,7 @@ export function yearlyHealth(life: Life) {
 export function mortalityRisk(life: Life) {
   const shifted = life.age + (78 - gameConfig.life.averageLifespan);
   return (
+    seriousDiseaseRisk(life) +
     (shifted < 40
       ? gameConfig.life.mortality.under40
       : shifted < 60
@@ -146,6 +148,12 @@ export function randomHealthEvent(life: Life) {
 }
 export function deathCause(life: Life, healthCause: string | null = null) {
   if (healthCause) return healthCause;
+  if (life.journey!.health.severe)
+    return (
+      "ภาวะแทรกซ้อนจาก" +
+      diseaseLabel(life) +
+      (life.simulation!.economy!.prisonUntil > life.age ? "ระหว่างรับโทษ" : "")
+    );
   const h = life.journey!.health,
     prison = life.simulation!.economy!.prisonUntil > life.age;
   if (life.age >= gameConfig.life.maxAge) return "อวัยวะเสื่อมตามวัยชรา";

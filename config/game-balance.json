@@ -1,5 +1,5 @@
 {
-  "revision": 8,
+  "revision": 9,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
@@ -70,7 +70,8 @@
       "sedan": 650000,
       "suv": 1100000,
       "sport": 3500000
-    }
+    },
+    "workRewardChance": 0.18
   },
   "life": {
     "averageLifespan": 78,
@@ -106,6 +107,26 @@
     "crypto": {
       "min": 0.4,
       "range": 1.4
+    },
+    "risks": {
+      "low": {
+        "label": "ระมัดระวัง",
+        "spread": 0.45,
+        "crashChance": 0.005,
+        "crashLoss": 0.25
+      },
+      "normal": {
+        "label": "สมดุล",
+        "spread": 1,
+        "crashChance": 0.02,
+        "crashLoss": 0.55
+      },
+      "high": {
+        "label": "เสี่ยงสูง",
+        "spread": 2.2,
+        "crashChance": 0.09,
+        "crashLoss": 1
+      }
     }
   },
   "events": {
@@ -122,5 +143,45 @@
     "confiscationChance": 0.35,
     "minSeizurePercent": 40,
     "maxSeizurePercent": 80
+  },
+  "diseases": {
+    "incidenceYoung": 0.003,
+    "incidenceAdult": 0.012,
+    "incidenceOlder": 0.035,
+    "progression": 0.28,
+    "treatedProgression": 0.1,
+    "reviewYears": 2,
+    "models": {
+      "cancer": {
+        "name": "มะเร็ง",
+        "canRecover": true,
+        "fatality": [0.008, 0.025, 0.1, 0.32],
+        "recovery": [72, 52, 28, 12]
+      },
+      "alzheimer": {
+        "name": "อัลไซเมอร์",
+        "canRecover": false,
+        "fatality": [0.004, 0.015, 0.04, 0.13],
+        "recovery": [70, 55, 40, 25]
+      },
+      "heart": {
+        "name": "โรคหัวใจ",
+        "canRecover": false,
+        "fatality": [0.012, 0.035, 0.09, 0.22],
+        "recovery": [75, 60, 40, 22]
+      },
+      "stroke": {
+        "name": "โรคหลอดเลือดสมอง",
+        "canRecover": true,
+        "fatality": [0.015, 0.04, 0.12, 0.28],
+        "recovery": [65, 48, 30, 15]
+      },
+      "kidney": {
+        "name": "โรคไตเรื้อรัง",
+        "canRecover": false,
+        "fatality": [0.005, 0.02, 0.07, 0.2],
+        "recovery": [75, 60, 40, 20]
+      }
+    }
   }
 }

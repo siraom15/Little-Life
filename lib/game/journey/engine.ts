@@ -1,10 +1,17 @@
+import { yearlyDisease, diseaseEvent, applyDiseaseCare } from "./diseases.ts";
 import { redEnvelopeEvent } from "./events/red-envelope.ts";
 import { randomHealthEvent, healthEventChance, deathCause } from "./health.ts";
 import { payChoice, receiveMoney, startingWallet } from "./wallet.ts";
 import { applyHabit, yearlyHealth, mortalityRisk, lifestyleEvent } from "./health.ts";
 import { positionTitle, settleMission } from "./career-paths.ts";
 import { gameConfig } from "./config.ts";
-import { assetStory, applyAssetBenefits, storyChoiceLocked } from "./asset-stories.ts";
+import { applyVenture } from "../economy.ts";
+import {
+  workRewardEvent,
+  assetStory,
+  applyAssetBenefits,
+  storyChoiceLocked,
+} from "./asset-stories.ts";
 import { purchaseAsset, removeCar } from "./assets.ts";
 import { isImprisoned, imprison, policeRaid, prisonConfiscation } from "./police.ts";
 import { buildFuneral } from "./funeral.ts";
@@ -39,6 +46,7 @@ export function createGameLife(seed: number, name = "นที"): Life {
     hasWorked: false,
     retirement: "",
     completedMissions: [],
+    milestonesScore: { healthyYears: 0, marriedYears: 0, peakRank: 0 },
     health: {
       addiction: 0,
       alcohol: 0,
@@ -169,6 +177,8 @@ function applyOutcome(life: Life, result: Outcome) {
     life.income = careerIncome(j.career.id, j.career.rank);
     life.job = positionTitle(j.career.id, j.career.rank);
   }
+  if (result.diseaseCare)
+    applyDiseaseCare(life, result.diseaseCare, result.diseaseRecovered);
   if (result.stopHavingChildren) j.stopHavingChildren = true;
   if (result.retire) {
     j.career = null;
@@ -332,7 +342,16 @@ function stepYear(life: Life) {
   ageFamily(life);
   yearlyFinance(life, wasImprisoned);
   applyAssetBenefits(life);
+  yearlyDisease(life);
   const healthCause = yearlyHealth(life);
+  const scores = (j.milestonesScore ??= {
+    healthyYears: 0,
+    marriedYears: 0,
+    peakRank: 0,
+  });
+  if (life.stats.health >= 70 && !j.health.severe) scores.healthyYears++;
+  if (j.partner?.status === "married" && !j.partner.deceased) scores.marriedYears++;
+  scores.peakRank = Math.max(scores.peakRank, j.career?.rank || 0);
   settleMission(life);
   if (wasImprisoned && !isImprisoned(life)) {
     const releasedMoney = j.frozenMoney || 0;
@@ -410,6 +429,14 @@ function stepYear(life: Life) {
         j.luck,
     });
   }
+  const reward =
+    j.career &&
+    life.age - j.career.since >= 2 &&
+    life.age - j.lastEventAge >= 2 &&
+    randomAt(life.seed, life.age, 286) < gameConfig.assets.workRewardChance
+      ? workRewardEvent(life)
+      : null;
+  const treatment = diseaseEvent(life);
   const scheduled = milestoneEvent(life);
   if (life.simulation!.economy!.prisonUntil <= life.age) {
     const heat = life.simulation!.economy!.heat;
@@ -423,7 +450,8 @@ function stepYear(life: Life) {
     else if (scheduled && !j.milestones.includes(scheduled.id)) {
       trigger(life, scheduled);
       j.milestones.push(scheduled.id);
-    } else if (
+    } else if (treatment) trigger(life, treatment);
+    else if (
       life.age >= gameConfig.family.redEnvelope.minAge &&
       life.age <= gameConfig.family.redEnvelope.maxAge &&
       randomAt(life.seed, life.age, 251) < gameConfig.events.redEnvelopeChance
@@ -454,7 +482,17 @@ function stepYear(life: Life) {
       randomAt(life.seed, life.age, 247) < gameConfig.events.layoffChance
     )
       trigger(life, careerOffer(life, "loss"));
-    else if (
+    else if (reward) {
+      trigger(life, reward);
+      j.queue.push({
+        id: "work-preview-" + life.age,
+        title: reward.title,
+        text: reward.text,
+        subject: reward.id,
+        scene: reward.scene,
+        effects: "ดูค่าใช้จ่ายก่อนตัดสินใจ · ซื้อหรือข้ามได้",
+      });
+    } else if (
       life.age - j.lastEventAge >= gameConfig.events.cooldownYears &&
       randomAt(life.seed, life.age, 208) < healthEventChance(life.age)
     )
@@ -472,6 +510,7 @@ function stepYear(life: Life) {
         j.queue.push({
           id: "asset-preview-" + life.age,
           title: story.title,
+          subject: story.id,
           visual: story.id.startsWith("damage-house")
             ? "fire"
             : story.id.startsWith("damage-car")
@@ -510,12 +549,21 @@ export function journeyAction(life: Life, action: SimulationAction): Life {
     if (choice.assetAction) {
       j.pending = null;
       if (!purchaseAsset(next, choice.assetAction)) return life;
+    } else if (choice.policyAction) {
+      j.pending = null;
+      if (!applyVenture(next, choice.policyAction)) return life;
+      next.simulation!.notice = null;
     } else payChoice(next, choice.cost || 0);
     const chance = successChance(life, choice);
     const won =
       chance === 100 ||
       randomAt(life.seed, life.age, 150 + life.simulation.actions.length) < chance / 100;
     applyOutcome(next, won ? choice.success : choice.failure || {});
+    if (j.milestonesScore)
+      j.milestonesScore.peakRank = Math.max(
+        j.milestonesScore.peakRank,
+        j.career?.rank || 0,
+      );
     if (won && current.id.startsWith("debt-") && choice.cost === 10000)
       j.debt = Math.max(0, j.debt - 10000);
     const result = won
