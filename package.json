@@ -12,12 +12,7 @@
     "format:check": "prettier --check app components hooks lib styles tests",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "deploy": "wrangler deploy",
-    "deploy:check": "wrangler deploy --dry-run",
-    "preview:cloudflare": "wrangler dev",
-    "dev:vinext": "vite dev --port 3001",
-    "build:vinext": "vite build",
-    "start:vinext": "vite preview",
-    "deploy:vinext": "vinext-cloudflare deploy"
+    "deploy:check": "wrangler deploy --dry-run"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
