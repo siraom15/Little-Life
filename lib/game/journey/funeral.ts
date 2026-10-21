@@ -62,6 +62,7 @@ export function buildFuneral(life: Life) {
       invite("คนจากเครือข่าย " + (i + 1), "คนรู้จักจากอดีต", 0.4);
   const estate =
     life.money +
+    (j.frozenMoney || 0) +
     e.fund +
     e.crypto +
     j.investment.stock +

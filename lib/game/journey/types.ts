@@ -46,6 +46,7 @@ export type Outcome = {
   bankrupt?: boolean;
   location?: string;
   retire?: boolean;
+  stopHavingChildren?: boolean;
   prison?: number;
   fine?: number;
   loseAsset?: "house" | "car";
@@ -97,6 +98,8 @@ export type Journey = {
   parents: { father: Person; mother: Person };
   partner: Partner | null;
   children: Child[];
+  stopHavingChildren?: boolean;
+  frozenMoney?: number;
   career: { id: string; rank: number; since: number } | null;
   debt: number;
   arrears: number;

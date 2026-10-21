@@ -6,7 +6,7 @@ import { positionTitle, settleMission } from "./career-paths.ts";
 import { gameConfig } from "./config.ts";
 import { assetStory, applyAssetBenefits, storyChoiceLocked } from "./asset-stories.ts";
 import { purchaseAsset, removeCar } from "./assets.ts";
-import { isImprisoned, imprison, policeRaid } from "./police.ts";
+import { isImprisoned, imprison, policeRaid, prisonConfiscation } from "./police.ts";
 import { buildFuneral } from "./funeral.ts";
 import type { Life, SimulationAction, Stat } from "../types.ts";
 import type { Outcome, Skill, StoryEvent } from "./types.ts";
@@ -169,6 +169,7 @@ function applyOutcome(life: Life, result: Outcome) {
     life.income = careerIncome(j.career.id, j.career.rank);
     life.job = positionTitle(j.career.id, j.career.rank);
   }
+  if (result.stopHavingChildren) j.stopHavingChildren = true;
   if (result.retire) {
     j.career = null;
     j.retirement = life.job;
@@ -289,7 +290,12 @@ function finishLife(life: Life, cause: string) {
   record(life, "จบการเดินทาง", "ความทรงจำที่ยังอยู่", cause, "บทสรุป", "death");
 }
 function showQueue(life: Life) {
-  if (isImprisoned(life)) return;
+  if (isImprisoned(life)) {
+    const index = life.journey!.queue.findIndex((notice) => notice.scene === "prison");
+    if (!life.simulation!.notice && index >= 0)
+      life.simulation!.notice = life.journey!.queue.splice(index, 1)[0];
+    return;
+  }
   if (!life.simulation!.notice)
     life.simulation!.notice = life.journey!.queue.shift() || null;
 }
@@ -320,19 +326,27 @@ function trigger(life: Life, event: StoryEvent) {
 function stepYear(life: Life) {
   const j = life.journey!;
   const wasImprisoned = isImprisoned(life);
+  if (wasImprisoned) prisonConfiscation(life);
   life.age++;
   j.luck = Math.floor(randomAt(life.seed, life.age, 140) * 101);
   ageFamily(life);
-  yearlyFinance(life);
+  yearlyFinance(life, wasImprisoned);
   applyAssetBenefits(life);
   const healthCause = yearlyHealth(life);
   settleMission(life);
   if (wasImprisoned && !isImprisoned(life)) {
+    const releasedMoney = j.frozenMoney || 0;
+    life.money += releasedMoney;
+    j.frozenMoney = 0;
     life.job = "พ้นโทษ · รอโอกาสใหม่";
     j.queue.push({
       id: "release-" + life.age,
       title: "ได้กลับมาข้างนอกแล้ว",
-      text: "ครบกำหนดโทษ คุณกลับมาสร้างชีวิตใหม่ได้อีกครั้ง",
+      text:
+        "ครบกำหนดโทษ คุณกลับมาสร้างชีวิตใหม่ได้อีกครั้ง" +
+        (releasedMoney
+          ? " · รับเงินที่พักไว้ ฿" + releasedMoney.toLocaleString("th-TH")
+          : ""),
       scene: "home",
       effects: "รอโอกาสงานใหม่ · จัดการการเงินและทรัพย์สินได้แล้ว",
     });
@@ -474,7 +488,7 @@ function stepYear(life: Life) {
 }
 export function journeyAction(life: Life, action: SimulationAction): Life {
   if (life.version !== 8 || !life.journey || !life.simulation) return life;
-  if (isImprisoned(life) && action.type !== "year") return life;
+  if (isImprisoned(life) && action.type !== "year" && action.type !== "ack") return life;
   if (action.type === "ack") {
     if (!life.simulation.notice) return life;
     const next = structuredClone(life);

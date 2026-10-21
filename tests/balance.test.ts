@@ -139,3 +139,129 @@ test("relationship improves police negotiation and raid cap is below previous ra
   assert.ok(successChance(l, choice) > low);
   assert.equal(gameConfig.dark.maxRaidChance, 0.12);
 });
+
+test("prison seizure removes 40–80% net assets once per sentence and queues a prison popup", async () => {
+  const { imprison, prisonConfiscation } = await import("../lib/game/journey/police.ts");
+  for (let seed = 0; seed < 40; seed++) {
+    const l = fixture();
+    l.seed = seed;
+    imprison(l, 5);
+    l.money = 100;
+    l.journey!.house = {
+      id: "condo",
+      price: 350000,
+      balance: 100000,
+      annualPayment: 10000,
+      rate: 0.06,
+      yearsLeft: 10,
+      missed: 0,
+      boughtAt: 20,
+    };
+    const before = 250100;
+    prisonConfiscation(l);
+    if (randomAt(seed, 30, 260) >= gameConfig.prison.confiscationChance) {
+      assert.equal(l.journey!.house?.id, "condo");
+      continue;
+    }
+    const after =
+      l.money + (l.journey!.frozenMoney || 0) + (l.journey!.house ? 250000 : 0);
+    assert.ok(before - after >= Math.floor(before * 0.4));
+    assert.ok(before - after <= Math.ceil(before * 0.8));
+    assert.equal(l.journey!.house, null);
+    assert.equal(l.journey!.debt, 0);
+    assert.equal(l.journey!.queue.at(-1)?.scene, "prison");
+    assert.match(l.journey!.queue.at(-1)!.text, /%.*฿/);
+    const saved = structuredClone(l);
+    prisonConfiscation(l);
+    assert.deepEqual(l, saved);
+  }
+});
+
+test("prison freezes income, spouse transfers and portfolio growth; inheritance waits for release", async () => {
+  const { imprison } = await import("../lib/game/journey/police.ts");
+  const { receiveMoney } = await import("../lib/game/journey/wallet.ts");
+  const { householdIncome } = await import("../lib/game/journey/family.ts");
+  const l = fixture();
+  l.journey!.partner = {
+    name: "คู่ชีวิต",
+    status: "married",
+    bond: 80,
+    since: 24,
+    income: 9000000,
+  };
+  imprison(l, 5);
+  l.simulation!.economy!.fund = 100000;
+  const before = l.money;
+  receiveMoney(l, 50000);
+  assert.equal(l.money, before);
+  assert.equal(l.journey!.frozenMoney, 50000);
+  assert.equal(householdIncome(l), 0);
+  yearlyFinance(l);
+  assert.ok(l.money <= before);
+  assert.equal(l.income, 0);
+  assert.equal(l.simulation!.economy!.fund, 100000);
+  l.age = 34;
+  l.journey!.pending = null;
+  l.journey!.queue = [];
+  l.flags.push("seized-sentence-35");
+  l.journey!.parents.father.deathAt = 100;
+  l.journey!.parents.mother.deathAt = 100;
+  const next = journeyAction(l, { type: "year" });
+  assert.equal(next.age, 35);
+  assert.equal(next.journey!.frozenMoney, 0);
+});
+
+test("no-more-children choice suppresses both milestone and random family planning", async () => {
+  const { relationshipEvent } =
+    await import("../lib/game/journey/events/relationships.ts");
+  const { milestoneEvent, randomStory } = await import("../lib/game/journey/events.ts");
+  let l = fixture();
+  l.journey!.partner = { name: "คู่ชีวิต", status: "married", bond: 80, since: 24 };
+  l.journey!.pending = relationshipEvent(l, "child");
+  l = journeyAction(l, { type: "choice", index: 4 });
+  assert.equal(l.journey!.stopHavingChildren, true);
+  for (const age of [30, 34, 38, 42, 46, 50, 54]) {
+    l.age = age;
+    assert.ok(!milestoneEvent(l)?.id.startsWith("child-"));
+    for (let seed = 0; seed < 40; seed++) {
+      l.seed = seed;
+      assert.ok(!randomStory(l).id.startsWith("child-"));
+    }
+  }
+  const waiting = fixture();
+  waiting.journey!.partner = l.journey!.partner;
+  waiting.journey!.pending = relationshipEvent(waiting, "child");
+  assert.ok(
+    !journeyAction(waiting, { type: "choice", index: 3 }).journey!.stopHavingChildren,
+  );
+});
+
+test("health events are less frequent while mortality increases with age and imprisonment", async () => {
+  const { mortalityRisk, healthEventChance } =
+    await import("../lib/game/journey/health.ts");
+  assert.ok(healthEventChance(30) < 0.24);
+  assert.ok(healthEventChance(50) < 0.29);
+  const l = fixture();
+  l.stats.health = 90;
+  const young = mortalityRisk(l);
+  assert.ok(young > 0.001);
+  l.age = 50;
+  const older = mortalityRisk(l);
+  assert.ok(older > young);
+  l.simulation!.economy!.prisonUntil = 60;
+  assert.ok(mortalityRisk(l) > older);
+});
+
+test("seizure popup pauses prison time and acknowledgement resumes it without enabling actions", async () => {
+  const { imprison, prisonConfiscation } = await import("../lib/game/journey/police.ts");
+  let l = fixture();
+  while (randomAt(l.seed, 30, 260) >= gameConfig.prison.confiscationChance) l.seed++;
+  imprison(l, 5);
+  prisonConfiscation(l);
+  l.simulation!.notice = l.journey!.queue.shift()!;
+  assert.equal(journeyAction(l, { type: "year" }), l);
+  const next = journeyAction(l, { type: "ack" });
+  assert.equal(next.simulation!.notice, null);
+  assert.equal(journeyAction(next, { type: "venture", id: "loan" }), next);
+  assert.equal(journeyAction(next, { type: "year" }).age, 31);
+});

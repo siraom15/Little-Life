@@ -11,6 +11,12 @@ function nonNegative(value: unknown, path: string): void {
 }
 nonNegative(balance, "game-balance");
 for (const [path, value] of Object.entries({
+  confiscation: balance.prison.confiscationChance,
+  healthEvent: balance.health.eventChance,
+  healthAdult: balance.health.eventChance20to40,
+  healthOlder: balance.health.eventChanceOver40,
+  prisonDeath: balance.life.prisonDeathRisk,
+  ...balance.life.mortality,
   raid: balance.dark.maxRaidChance,
   inheritance: balance.family.inheritanceChance,
   parentSaving: balance.family.parentSavingRate,
@@ -50,3 +56,9 @@ if (
   balance.investment.intervals.some((n) => !Number.isInteger(n) || n < 1)
 )
   throw new Error("Investment intervals must be positive years");
+
+if (
+  balance.prison.minSeizurePercent > balance.prison.maxSeizurePercent ||
+  balance.prison.maxSeizurePercent > 100
+)
+  throw new Error("Invalid prison seizure range");

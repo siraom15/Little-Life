@@ -8,3 +8,6 @@ reference/
 .wrangler/
 .dev.vars
 .dev.vars.*
+/dist/
+.vinext/
+.cloudflare/

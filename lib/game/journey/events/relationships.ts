@@ -153,8 +153,8 @@ export function relationshipEvent(
         ),
         option(
           "เลือกชีวิตคู่ไม่มีลูกเพิ่ม",
-          "สุข +6 · ความผูกพัน +5",
-          { stats: { happy: 6 }, bond: 5 },
+          "สุข +6 · ความผูกพัน +5 · ไม่ถามเรื่องมีลูกอีกตลอดชีวิต",
+          { stats: { happy: 6 }, bond: 5, stopHavingChildren: true },
           { icon: "heart" },
         ),
       ],

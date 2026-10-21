@@ -131,6 +131,7 @@ export function milestoneEvent(life: Life): StoryEvent | null {
   if (
     [30, 34, 38, 42, 46, 50, 54].includes(age) &&
     j.partner?.status === "married" &&
+    !j.stopHavingChildren &&
     j.children.length < 5
   )
     return relationshipEvent(life, "child");

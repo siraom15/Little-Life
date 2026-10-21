@@ -75,16 +75,23 @@
   "life": {
     "averageLifespan": 78,
     "maxAge": 110,
-    "prisonDeathRisk": 0.008
+    "prisonDeathRisk": 0.018,
+    "mortality": {
+      "under40": 0.003,
+      "under60": 0.009,
+      "under80": 0.03,
+      "elderly": 0.1,
+      "poorHealth": 0.04
+    }
   },
   "health": {
-    "eventChance": 0.14,
+    "eventChance": 0.07,
     "hospitalThreshold": 25,
     "addictionHospitalThreshold": 75,
     "overdoseThreshold": 90,
     "overdoseRisk": 0.15,
-    "eventChance20to40": 0.48,
-    "eventChanceOver40": 0.58
+    "eventChance20to40": 0.2,
+    "eventChanceOver40": 0.26
   },
   "investment": {
     "intervals": [2, 3, 5],
@@ -110,5 +117,10 @@
   "education": {
     "matchingCareerBonus": 25,
     "relatedCareerBonus": 10
+  },
+  "prison": {
+    "confiscationChance": 0.35,
+    "minSeizurePercent": 40,
+    "maxSeizurePercent": 80
   }
 }

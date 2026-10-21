@@ -117,8 +117,14 @@ export function yearlyHealth(life: Life) {
 export function mortalityRisk(life: Life) {
   const shifted = life.age + (78 - gameConfig.life.averageLifespan);
   return (
-    (shifted < 40 ? 0.001 : shifted < 60 ? 0.004 : shifted < 80 ? 0.015 : 0.06) +
-    (life.stats.health < 20 ? 0.025 : 0) +
+    (shifted < 40
+      ? gameConfig.life.mortality.under40
+      : shifted < 60
+        ? gameConfig.life.mortality.under60
+        : shifted < 80
+          ? gameConfig.life.mortality.under80
+          : gameConfig.life.mortality.elderly) +
+    (life.stats.health < 20 ? gameConfig.life.mortality.poorHealth : 0) +
     (life.simulation!.economy!.prisonUntil > life.age
       ? gameConfig.life.prisonDeathRisk
       : 0)

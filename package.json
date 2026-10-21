@@ -13,7 +13,11 @@
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "deploy": "wrangler deploy",
     "deploy:check": "wrangler deploy --dry-run",
-    "preview:cloudflare": "wrangler dev"
+    "preview:cloudflare": "wrangler dev",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build",
+    "start:vinext": "vite preview",
+    "deploy:vinext": "vinext-cloudflare deploy"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

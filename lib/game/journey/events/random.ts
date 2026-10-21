@@ -306,7 +306,12 @@ export function randomStory(life: Life): StoryEvent {
         pool.push(careerOffer(life, "loss"));
       }
     }
-    if (j.partner?.status === "married" && life.age < 60 && j.children.length < 5)
+    if (
+      !j.stopHavingChildren &&
+      j.partner?.status === "married" &&
+      life.age < 60 &&
+      j.children.length < 5
+    )
       pool.push(relationshipEvent(life, "child"));
     if (j.partner && j.partner.status !== "separated") {
       if (j.partner.bond < 65) pool.push(relationshipEvent(life, "breakup"));

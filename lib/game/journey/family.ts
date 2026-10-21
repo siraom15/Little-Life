@@ -78,6 +78,7 @@ export function spouseIncome(life: Life) {
   return p?.status === "married" && !p.deceased ? p.income || 0 : 0;
 }
 export function householdIncome(life: Life) {
+  if (life.simulation!.economy!.prisonUntil > life.age) return 0;
   return (
     (life.simulation!.economy!.prisonUntil > life.age ||
     life.journey!.health.hospitalUntil >= life.age
@@ -106,7 +107,11 @@ function inherit(life: Life, name: string, savings: number, channel: number) {
     id: "inherit-" + channel + "-" + life.age,
     title: "สิ่งที่ " + name + " ทิ้งไว้",
     text: amount
-      ? "ได้รับมรดก +฿" + amount.toLocaleString("th-TH")
+      ? "มรดก ฿" +
+        amount.toLocaleString("th-TH") +
+        (life.simulation!.economy!.prisonUntil > life.age
+          ? " · พักไว้ รับเมื่อพ้นโทษ"
+          : " · รับแล้ว")
       : "ไม่มีมรดกเป็นเงินเหลือให้",
     scene: "home",
     effects: "รายได้ของผู้จากไปสิ้นสุดลง",

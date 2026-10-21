@@ -89,7 +89,7 @@ test("unaffordable finance and resale are blocked; three missed installments rep
   assert.ok(life.journey!.debt > 0);
   assert.ok(life.journey!.queue.some((n) => n.id.startsWith("repossession")));
 });
-test("prison rejects every player action except time, suppresses popups, and releases on schedule", () => {
+test("prison blocks gameplay but allows seizure notices and releases on schedule", () => {
   let life = fixture();
   life.journey!.pending = policeRaid(life);
   life = journeyAction(life, { type: "choice", index: 0 });
@@ -105,7 +105,10 @@ test("prison rejects every player action except time, suppresses popups, and rel
     assert.equal(journeyAction(life, action), life);
   life = journeyAction(life, { type: "year" });
   assert.equal(life.age, 31);
-  assert.equal(life.simulation!.notice, null);
+  if (life.simulation!.notice) {
+    assert.equal(life.simulation!.notice.scene, "prison");
+    life = journeyAction(life, { type: "ack" });
+  }
   assert.ok(isImprisoned(life));
   life = journeyAction(life, { type: "year" });
   assert.equal(life.age, 32);

@@ -16,5 +16,9 @@ export function payChoice(life: Life, cost: number) {
   life.money -= cost;
 }
 export function receiveMoney(life: Life, amount: number) {
+  if (amount > 0 && life.simulation!.economy!.prisonUntil > life.age) {
+    life.journey!.frozenMoney = (life.journey!.frozenMoney || 0) + amount;
+    return;
+  }
   life.money += amount;
 }

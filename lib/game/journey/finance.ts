@@ -80,6 +80,7 @@ export function bankrupt(life: Life) {
   const j = life.journey!,
     e = life.simulation!.economy!;
   life.money = 0;
+  j.frozenMoney = 0;
   j.homeless = true;
   j.extraCars = [];
   j.investment.stock = 0;
@@ -206,15 +207,18 @@ export function financeAction(life: Life, id: string) {
   };
   return true;
 }
-export function yearlyFinance(life: Life) {
+export function yearlyFinance(
+  life: Life,
+  imprisoned = life.simulation!.economy!.prisonUntil > life.age,
+) {
   const j = life.journey!,
     e = (life.simulation!.economy ??= emptyEconomy());
   settleFamily(life);
   if (life.age >= 18) {
-    const income = life.journey!.hasWorked ? householdIncome(life) : 0;
+    const income = !imprisoned && life.journey!.hasWorked ? householdIncome(life) : 0;
     life.money += income - annualExpenses(life);
   }
-  yearlyInvestments(life);
+  if (!imprisoned) yearlyInvestments(life);
   if (e.policy !== "none" && e.insuredAt < life.age) {
     const premium = policyTerms[e.policy].premium;
     if (life.money >= premium) life.money -= premium;

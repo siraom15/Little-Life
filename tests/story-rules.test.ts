@@ -98,7 +98,7 @@ test("medical education changes actual displayed hiring odds without changing st
 });
 test("health event chances rise at 20 and 41", () => {
   assert.equal(healthEventChance(10), 0);
-  assert.ok(healthEventChance(20) > healthEventChance(19) * 3);
+  assert.ok(healthEventChance(20) > healthEventChance(19) * 2);
   assert.ok(healthEventChance(41) > healthEventChance(40));
 });
 test("sudden layoff stops salary and queues an explicit layoff scene", () => {
