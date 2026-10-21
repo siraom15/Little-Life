@@ -5,3 +5,6 @@ out/
 .pnpm-store/
 
 reference/
+.wrangler/
+.dev.vars
+.dev.vars.*

@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "thai-life",
+  "compatibility_date": "2026-10-01",
+  "build": {
+    "command": "node scripts/build-cloudflare.mjs"
+  },
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}

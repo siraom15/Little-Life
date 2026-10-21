@@ -105,3 +105,7 @@ npm test รันเฉพาะ journey.test.ts และ expansion.test.ts �
 ## v8: เงินตั้งต้นตามฐานะ
 
 ใช้เงินส่วนตัวตั้งแต่เริ่ม 20,000 / 80,000 / 200,000 ตามรายได้ครอบครัว ไม่ใช้เงินพ่อแม่จ่ายค่าเรียน ไม่คิดค่าครองชีพและลูกก่อนงานแรก อั่งเปาและรางวัลเข้ากระเป๋าทันที ไม่มีเงินแจกอัตโนมัติ กติกาใหม่นี้ใช้เซฟ v8
+
+## Cloudflare deployment
+
+รองรับ `npx wrangler deploy` โดย build เป็น static assets อัตโนมัติ ดูการตั้งค่า GitHub / Workers / Pages ใน [คู่มือ Cloudflare](docs/cloudflare.md)
