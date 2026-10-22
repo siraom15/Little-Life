@@ -1,3 +1,4 @@
+import { yearlyLottery } from "./lottery.ts";
 import {
   investmentActions,
   investmentValue,
@@ -32,6 +33,8 @@ export const financeIds = [
   "sell-fund",
   "sell-crypto",
   "lottery",
+  "cancel-lottery",
+  "premium",
   "basic",
   "family",
   "cancel-policy",
@@ -39,17 +42,27 @@ export const financeIds = [
   "repay",
   "repay-all",
 ];
+export function graduated(life: Life) {
+  const school = life.journey!.school;
+  const age = school.includes("แพทยศาสตร์")
+    ? 24
+    : school.includes("มหาวิทยาลัย")
+      ? 22
+      : school.includes("วิทยาลัย")
+        ? 20
+        : 18;
+  return (
+    life.journey!.hasWorked ||
+    life.flags.includes("retired") ||
+    (life.age >= age && !(life.age === 18 && !life.journey!.milestones.includes("study")))
+  );
+}
 export function annualExpenses(life: Life) {
-  if (!life.journey!.hasWorked && !life.flags.includes("retired"))
-    return assetMaintenance(life);
+  if (!graduated(life)) return assetMaintenance(life);
   return Math.max(
     0,
-    (!life.journey!.hasWorked && !life.flags.includes("retired")
-      ? 0
-      : life.journey!.homeless
-        ? 60000
-        : 120000) +
-      (life.journey!.hasWorked || life.flags.includes("retired")
+    (!graduated(life) ? 0 : life.journey!.homeless ? 60000 : 120000) +
+      (graduated(life)
         ? life.journey!.children.filter(
             (child) => life.age - child.bornAt < gameConfig.family.supportUntil,
           ).length * gameConfig.family.childCost
@@ -61,7 +74,7 @@ export function annualExpenses(life: Life) {
         life.location as keyof typeof gameConfig.abroad.countries
       ]?.livingCost || 0) +
       assetMaintenance(life) -
-      (life.journey!.house && life.journey!.hasWorked ? 36000 : 0),
+      (life.journey!.house && graduated(life) ? 36000 : 0),
   );
 }
 export function debtPayment(debt: number) {
@@ -224,7 +237,10 @@ export function yearlyFinance(
     const income = !imprisoned && life.journey!.hasWorked ? householdIncome(life) : 0;
     life.money += income - annualExpenses(life);
   }
-  if (!imprisoned) yearlyInvestments(life);
+  if (!imprisoned) {
+    yearlyInvestments(life);
+    yearlyLottery(life);
+  }
   if (e.policy !== "none" && e.insuredAt < life.age) {
     const premium = policyTerms[e.policy].premium;
     if (life.money >= premium) life.money -= premium;

@@ -1,3 +1,4 @@
+import { yearlyLottery } from "../lib/game/journey/lottery.ts";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -73,9 +74,11 @@ test("birth stats are seeded and do not reset after a choice", () => {
 });
 test("lottery winner receives eight million less ticket price", () => {
   const l = fixture();
-  while (randomAt(l.seed, l.age, 31) >= gameConfig.lottery.chance) l.seed++;
+  while (randomAt(l.seed, l.age + 1, 31) >= gameConfig.lottery.chance) l.seed++;
   const before = l.money;
   assert.ok(applyVenture(l, "lottery"));
+  l.age++;
+  yearlyLottery(l);
   assert.equal(l.money - before, 8000000 - 80);
 });
 test("short film skips routine expenses and keeps important scenes in order", () => {

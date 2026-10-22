@@ -64,7 +64,7 @@ test("card escapes user text; film retains chronological birth and ending", () =
   const frames = lifeHighlights(l);
   assert.equal(frames[0].age, 0);
   assert.equal(frames.at(-1)!.id, "death");
-  assert.ok(frames.length <= 8);
+  assert.ok(frames.length <= 10);
 });
 test("five serious diseases worsen mortality and retain free treatment choices", () => {
   const l = fixture();

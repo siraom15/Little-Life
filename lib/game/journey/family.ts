@@ -37,7 +37,13 @@ export function ageFamily(life: Life) {
   for (const [role, parent] of Object.entries(j.parents))
     if (parent.alive && life.age >= parent.deathAt) {
       parent.alive = false;
-      inherit(life, parent.name, parent.savings || 0, role === "father" ? 171 : 172);
+      const inheritance = inherit(
+        life,
+        parent.name,
+        parent.savings || 0,
+        role === "father" ? 171 : 172,
+        false,
+      );
       parent.savings = 0;
       life.stats.happy = Math.max(0, life.stats.happy - 12);
       const title = (role === "father" ? "พ่อ" : "แม่") + parent.name + "จากไปแล้ว";
@@ -51,14 +57,21 @@ export function ageFamily(life: Life) {
           (parent.ageAtBirth + life.age) +
           " ปี รายได้ส่วนของท่านจะไม่รวมอยู่ในรายได้ครอบครัวอีก",
         scene: "home",
-        effects: "ความทรงจำยังอยู่ · ความสุข −12",
+        effects:
+          "ความทรงจำยังอยู่ · ความสุข −12 · เงินมรดก +฿" +
+          inheritance.toLocaleString("th-TH") +
+          (life.simulation!.economy!.prisonUntil > life.age ? " (รับเมื่อพ้นโทษ)" : ""),
       });
       life.history.push({
         id: "parent-" + role,
         age: life.age,
         title,
         choice: title,
-        detail: "อายุ " + (parent.ageAtBirth + life.age) + " ปี",
+        detail:
+          "อายุ " +
+          (parent.ageAtBirth + life.age) +
+          " ปี · มรดก +฿" +
+          inheritance.toLocaleString("th-TH"),
         category: "ครอบครัว",
         money: life.money,
       });
@@ -86,7 +99,13 @@ export function householdIncome(life: Life) {
       : life.income) + spouseIncome(life)
   );
 }
-function inherit(life: Life, name: string, savings: number, channel: number) {
+function inherit(
+  life: Life,
+  name: string,
+  savings: number,
+  channel: number,
+  notify = true,
+) {
   const amount =
     randomAt(life.seed, life.age, channel) < gameConfig.family.inheritanceChance
       ? Math.max(0, Math.floor(savings))
@@ -101,21 +120,23 @@ function inherit(life: Life, name: string, savings: number, channel: number) {
     category: "ครอบครัว",
     money: life.money,
   });
-  life.journey!.queue.push({
-    visual: "grave",
-    subject: name,
-    id: "inherit-" + channel + "-" + life.age,
-    title: "สิ่งที่ " + name + " ทิ้งไว้",
-    text: amount
-      ? "มรดก ฿" +
-        amount.toLocaleString("th-TH") +
-        (life.simulation!.economy!.prisonUntil > life.age
-          ? " · พักไว้ รับเมื่อพ้นโทษ"
-          : " · รับแล้ว")
-      : "ไม่มีมรดกเป็นเงินเหลือให้",
-    scene: "home",
-    effects: "รายได้ของผู้จากไปสิ้นสุดลง",
-  });
+  if (notify)
+    life.journey!.queue.push({
+      visual: "grave",
+      subject: name,
+      id: "inherit-" + channel + "-" + life.age,
+      title: "สิ่งที่ " + name + " ทิ้งไว้",
+      text: amount
+        ? "มรดก ฿" +
+          amount.toLocaleString("th-TH") +
+          (life.simulation!.economy!.prisonUntil > life.age
+            ? " · พักไว้ รับเมื่อพ้นโทษ"
+            : " · รับแล้ว")
+        : "ไม่มีมรดกเป็นเงินเหลือให้",
+      scene: "home",
+      effects: "รายได้ของผู้จากไปสิ้นสุดลง",
+    });
+  return amount;
 }
 export function settleFamily(life: Life) {
   const cfg = gameConfig.family,

@@ -65,12 +65,6 @@ export default function SelfScreen({
         </p>
       </section>
       <section className="simple-card">
-        {j.health.severe && (
-          <p className="risk-note">
-            {diseaseLabel(life)} · ความเสี่ยงจากโรคปีนี้{" "}
-            {Math.round(seriousDiseaseRisk(life) * 100)}% · รอติดตามการรักษา
-          </p>
-        )}
         <h3>สิ่งที่สร้างมา</h3>
         <p>
           บ้าน:{" "}
@@ -90,6 +84,13 @@ export default function SelfScreen({
       </section>
       <section className="simple-card">
         <h3>สุขภาพและวิถีชีวิต</h3>
+        {j.health.severe && (
+          <p className="risk-note">
+            {diseaseLabel(life)} · ความเสี่ยงจากโรคปีนี้{" "}
+            {Math.round(seriousDiseaseRisk(life) * 100)}% · รอติดตามการรักษา
+          </p>
+        )}
+
         <p>
           {j.health.disease || "ยังไม่มีโรคที่ตรวจพบ"} · ออกกำลัง {j.health.exercise}/5
         </p>

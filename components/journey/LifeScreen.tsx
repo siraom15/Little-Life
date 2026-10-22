@@ -22,13 +22,11 @@ export default function LifeScreen({
   life,
   setLife,
   shared,
-  restart,
   onSelf,
 }: {
   life: Life;
   setLife: React.Dispatch<React.SetStateAction<Life | null>>;
   shared: boolean;
-  restart: () => void;
   onSelf: () => void;
 }) {
   const j = life.journey!,
@@ -85,14 +83,11 @@ export default function LifeScreen({
           )}
           <FuneralSummary life={life} />
           <a
-            className="primary-action"
+            className="primary-action ending-invitation"
             href={"/ending/#life=" + encodeURIComponent(encodeLife(life))}
           >
-            เปิดสมุดความทรงจำ →
+            🏆 เปิดสมุดความทรงจำ → ดูถ้วยและเรื่องราวของคุณ
           </a>
-          <button className="primary-action" onClick={restart}>
-            เริ่มอีกชีวิต
-          </button>
         </section>
       ) : event && !shared ? (
         <section className="current-event" key={event.id}>
@@ -179,37 +174,39 @@ export default function LifeScreen({
           )}
         </section>
       )}
-      <details className="simple-details">
-        <summary>
-          งานและทักษะ{" "}
-          <span>
-            {career
-              ? positionTitle(career.id, career.rank)
-              : life.age < 18
-                ? "กำลังเรียน"
-                : life.job}
-          </span>
-        </summary>
-        <p>{j.school}</p>
-        <p>
-          {career ? jobs.find((job) => job.id === career.id)?.label : life.job} · รายได้ ฿
-          {baht(life.income)}/ปี
-        </p>
-        <p className="muted">
-          เปลี่ยนงานหรือเลื่อนขั้นได้เมื่อมีเหตุการณ์ ทักษะเฉพาะและดวงช่วยเพิ่มโอกาส
-        </p>
-        <div className="skill-list">
-          {(Object.entries(skillLabels) as [Skill, string][]).map(([key, label]) => (
-            <div key={key}>
-              <span>
-                {label}
-                <b>{j.skills[key]}</b>
-              </span>
-              <meter min={0} max={100} value={j.skills[key]} aria-label={label} />
-            </div>
-          ))}
-        </div>
-      </details>
+      {!life.done && (
+        <details className="simple-details">
+          <summary>
+            งานและทักษะ{" "}
+            <span>
+              {career
+                ? positionTitle(career.id, career.rank)
+                : life.age < 18
+                  ? "กำลังเรียน"
+                  : life.job}
+            </span>
+          </summary>
+          <p>{j.school}</p>
+          <p>
+            {career ? jobs.find((job) => job.id === career.id)?.label : life.job} · รายได้
+            ฿{baht(life.income)}/ปี
+          </p>
+          <p className="muted">
+            เปลี่ยนงานหรือเลื่อนขั้นได้เมื่อมีเหตุการณ์ ทักษะเฉพาะและดวงช่วยเพิ่มโอกาส
+          </p>
+          <div className="skill-list">
+            {(Object.entries(skillLabels) as [Skill, string][]).map(([key, label]) => (
+              <div key={key}>
+                <span>
+                  {label}
+                  <b>{j.skills[key]}</b>
+                </span>
+                <meter min={0} max={100} value={j.skills[key]} aria-label={label} />
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
       <button className="finance-action" onClick={onSelf}>
         ดูตัวฉันและทักษะ →
       </button>

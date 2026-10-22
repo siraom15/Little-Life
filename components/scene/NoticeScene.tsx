@@ -14,6 +14,22 @@ export default function NoticeScene({ life }: { life: Life }) {
       shapeRendering="crispEdges"
     >
       <rect width="400" height="200" fill="#10283e" />
+      {v === "lottery" && (
+        <g className="pixel-celebrate">
+          <path d="M70 50h260v100H70z" fill="#ffdc59" />
+          <path d="M85 65h230v70H85z" fill="#244b74" />
+          <text x="200" y="110" textAnchor="middle" fontSize="28" fill="#fff3a6">
+            8,000,000
+          </text>
+          <path
+            d="M40 25h8v8h-8zM340 40h8v8h-8zM55 165h8v8h-8zM325 165h8v8h-8z"
+            fill="#5ff5d1"
+          />
+          <text x="200" y="180" textAnchor="middle" fontSize="15" fill="#fff3a6">
+            วันที่ดวงเปลี่ยนชีวิต
+          </text>
+        </g>
+      )}
       {v === "red-envelope" && (
         <g className="pixel-celebrate">
           <rect x="145" y="45" width="110" height="120" fill="#d7444a" />

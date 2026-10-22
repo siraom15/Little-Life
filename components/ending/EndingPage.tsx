@@ -4,6 +4,7 @@ import { encodeLife, decodeLife, type Life } from "@/lib/game";
 import { loadLife, storyLink } from "@/lib/browser/life-storage";
 import { endingAchievements } from "@/lib/game/journey/achievements";
 import { endingCardSvg } from "@/lib/game/journey/ending-card";
+import HistoryScreen from "../journey/HistoryScreen";
 import EndingDetails from "./EndingDetails";
 import LifeFilm from "./LifeFilm";
 export default function EndingPage() {
@@ -11,6 +12,7 @@ export default function EndingPage() {
     [ready, setReady] = useState(false),
     [film, setFilm] = useState(false),
     [details, setDetails] = useState(false),
+    [history, setHistory] = useState(false),
     [message, setMessage] = useState(""),
     [url, setUrl] = useState(""),
     [busy, setBusy] = useState(false);
@@ -111,6 +113,7 @@ export default function EndingPage() {
         <button disabled={busy} onClick={saveImage}>
           {busy ? "กำลังสร้าง…" : "↓ บันทึกภาพ"}
         </button>
+        <button onClick={() => setHistory(true)}>📖 บันทึกชีวิต</button>
         <button onClick={() => setFilm(true)}>▶ หนังสั้น</button>
         <button onClick={() => setDetails(!details)}>ถ้วย / รายละเอียด</button>
         <a href={"/#life=" + encodeURIComponent(encodeLife(life))}>← กลับไปงานศพ</a>
@@ -120,6 +123,11 @@ export default function EndingPage() {
         <p className="ending-toast" role="status" onClick={() => setMessage("")}>
           {message}
         </p>
+      )}
+      {history && (
+        <EndingDetails onClose={() => setHistory(false)}>
+          <HistoryScreen life={life} />
+        </EndingDetails>
       )}
       {details && (
         <EndingDetails onClose={() => setDetails(false)}>

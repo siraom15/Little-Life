@@ -1,3 +1,4 @@
+import { offeredSalary, promotedSalary } from "./salary.ts";
 import { choiceCredit } from "./choice-credit.ts";
 import { abroadEvent } from "./abroad.ts";
 import { yearlyAccident } from "./accidents.ts";
@@ -151,10 +152,13 @@ function setCareer(life: Life, id: string) {
   if (!job) return;
   life.journey!.career = { id, rank: 0, since: life.age };
   if (!life.journey!.careerHistory.includes(id)) life.journey!.careerHistory.push(id);
+  const salary = offeredSalary(life, id);
+  life.journey!.career!.baseSalary = salary;
+  life.journey!.lastSalary = salary;
   life.journey!.hasWorked = true;
 
   life.job = positionTitle(id, 0);
-  life.income = careerIncome(id, 0, life.location);
+  life.income = salary;
   life.flags = life.flags.filter((flag) => flag !== "retired");
 }
 function applyOutcome(life: Life, result: Outcome) {
@@ -186,6 +190,7 @@ function applyOutcome(life: Life, result: Outcome) {
     });
   }
   if (result.loseJob) {
+    j.lastSalary = Math.max(j.lastSalary || 0, life.income);
     j.career = null;
     life.job = "ว่างงาน";
     life.income = 0;
@@ -194,8 +199,9 @@ function applyOutcome(life: Life, result: Outcome) {
   if (result.promote && j.career) {
     if (j.career.rank < 3 && j.milestonesScore)
       j.milestonesScore.promotionCount = (j.milestonesScore.promotionCount || 0) + 1;
+    life.income = promotedSalary(life);
+    j.lastSalary = life.income;
     j.career.rank = Math.min(3, j.career.rank + 1);
-    life.income = careerIncome(j.career.id, j.career.rank, life.location);
     life.job = positionTitle(j.career.id, j.career.rank);
   }
   if (result.diseaseCare)
@@ -334,6 +340,7 @@ function trigger(life: Life, event: StoryEvent) {
   life.journey!.pending = event;
   life.journey!.lastEventAge = life.age;
   if (event.id.startsWith("career-loss")) {
+    life.journey!.lastSalary = Math.max(life.income, life.journey!.lastSalary || 0);
     life.journey!.career = null;
     life.income = 0;
     life.job = "ว่างงาน";
@@ -639,8 +646,10 @@ export function journeyAction(life: Life, action: SimulationAction): Life {
         effects:
           "รายได้ ฿" +
           next.income.toLocaleString("th-TH") +
-          "/ปี · ตำรวจจับตา " +
-          next.simulation!.economy!.heat,
+          "/ปี" +
+          (next.simulation!.economy!.heat
+            ? " · ตำรวจจับตา " + next.simulation!.economy!.heat
+            : ""),
       });
     if (choice.success.relationship === "child" && !won)
       j.queue.push({

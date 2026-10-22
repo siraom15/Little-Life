@@ -127,6 +127,11 @@ export function assetMaintenance(life: Life) {
 }
 function record(life: Life, title: string, detail: string) {
   life.history.push({
+    assetSnapshot: structuredClone({
+      house: life.journey!.house,
+      car: life.journey!.car,
+      extraCars: life.journey!.extraCars,
+    }),
     id: "asset-" + life.age + "-" + life.history.length,
     age: life.age,
     title,

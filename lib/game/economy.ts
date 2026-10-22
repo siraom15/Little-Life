@@ -33,14 +33,17 @@ export function ventureLockedReason(life: Life, id: string): string | null {
     return "ยังทำรายการไม่ได้";
   if (life.age < (item.minAge || 18)) return "ปลดล็อกอายุ " + (item.minAge || 18) + " ปี";
   if (e.prisonUntil > life.age) return "พ้นโทษเมื่ออายุ " + e.prisonUntil + " ปี";
-  if (e.lastAction[id] === life.age) return "ทำรายการนี้แล้วในปีนี้";
+  if (!["lottery", "cancel-lottery"].includes(id) && e.lastAction[id] === life.age)
+    return "ทำรายการนี้แล้วในปีนี้";
+  if (id === "lottery" && e.lottery?.active) return "เปิดซื้อรายปีแล้ว";
+  if (id === "cancel-lottery" && !e.lottery?.active) return "ยังไม่ได้เปิดซื้อรายปี";
   if (item.cost > 0 && life.money < item.cost) return "เงินไม่พอ";
   if ((id === "sell-fund" && e.fund <= 0) || (id === "sell-crypto" && e.crypto <= 0))
     return "ยังไม่มีสินทรัพย์นี้";
   if (id === "cancel-policy" && e.policy === "none") return "ยังไม่มีกรมธรรม์";
-  if ((id === "basic" || id === "family") && e.policy !== "none")
+  if (["basic", "family", "premium"].includes(id) && e.policy !== "none")
     return "ยกเลิกกรมธรรม์เดิมก่อนเปลี่ยนแผน";
-  if ((id === "basic" || id === "family") && life.age > 65)
+  if (["basic", "family", "premium"].includes(id) && life.age > 65)
     return "รับสมัครถึงอายุ 65 ปี";
   const career = careers.find((job) => "job-" + job.id === id);
   if (career && life.stats.skill < career.skill) return "ต้องมีทักษะ " + career.skill;
@@ -84,20 +87,21 @@ export function applyVenture(life: Life, id: string): boolean {
       break;
     case "basic":
     case "family":
+    case "premium":
       e.policy = id;
       e.insuredAt = life.age;
       break;
     case "cancel-policy":
       e.policy = "none";
       break;
-    case "lottery": {
-      const won = randomAt(life.seed, life.age, 31) < gameConfig.lottery.chance;
-      life.money += won ? gameConfig.lottery.prize : 0;
-      result = won
-        ? "ถูกรางวัล รับ " + gameConfig.lottery.prize.toLocaleString("th-TH") + " บาท"
-        : "ไม่ถูกรางวัล เสียค่าหวย 80 บาท";
+    case "lottery":
+      e.lottery = { active: true, years: 0, lastDrawAge: life.age };
+      result = "เปิดซื้อหวยปีละ 80 บาท เริ่มปีหน้า · โอกาสเริ่มต้น 2%";
       break;
-    }
+    case "cancel-lottery":
+      e.lottery = { active: false, years: 0, lastDrawAge: life.age };
+      result = "ยกเลิกซื้อรายปีแล้ว โอกาสกลับไป 2%";
+      break;
     case "volunteer":
       e.reputation = bound(e.reputation + 12);
       life.stats.social = bound(life.stats.social + 5);

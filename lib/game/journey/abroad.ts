@@ -1,3 +1,4 @@
+import { offeredSalary } from "./salary.ts";
 import { educationBonus } from "./education.ts";
 import type { Life } from "../types.ts";
 import { gameConfig } from "./config.ts";
@@ -17,7 +18,7 @@ export function abroadEvent(life: Life) {
         "เตรียมย้าย ฿" +
           config.moveCost.toLocaleString("th-TH") +
           " · รายได้ ฿" +
-          careerIncome(job.id, 0, country).toLocaleString("th-TH") +
+          offeredSalary(life, job.id, country).toLocaleString("th-TH") +
           "/ปี · ค่าครองชีพเพิ่ม ฿" +
           config.livingCost.toLocaleString("th-TH") +
           "/ปี",

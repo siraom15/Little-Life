@@ -1,11 +1,17 @@
 "use client";
+import { Music2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 export default function ThemeMusic() {
-  const [playing, setPlaying] = useState(false),
+  const [playing, setPlaying] = useState(true),
     [error, setError] = useState(false);
   const engine = useRef<AudioContext | null>(null);
   useEffect(() => {
     if (!playing) return;
+    const resume = () => {
+      engine.current?.resume().catch(() => setError(true));
+    };
+    document.addEventListener("pointerdown", resume);
+    document.addEventListener("keydown", resume);
     let timer: ReturnType<typeof setInterval> | undefined;
     try {
       const context = new AudioContext();
@@ -53,6 +59,8 @@ export default function ThemeMusic() {
       setPlaying(false);
     }
     return () => {
+      document.removeEventListener("pointerdown", resume);
+      document.removeEventListener("keydown", resume);
       if (timer) clearInterval(timer);
       engine.current?.close().catch(() => {});
       engine.current = null;
@@ -68,7 +76,14 @@ export default function ThemeMusic() {
         setPlaying(!playing);
       }}
     >
-      {playing ? "♫" : "♪"}
+      {playing ? (
+        <Music2 size={19} />
+      ) : (
+        <span className="muted-music">
+          <Music2 size={19} />
+          <span aria-hidden="true" />
+        </span>
+      )}
     </button>
   );
 }

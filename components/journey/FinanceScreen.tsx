@@ -1,4 +1,5 @@
 "use client";
+import { gameConfig } from "@/lib/game/journey/config";
 import InvestmentPanel from "./InvestmentPanel";
 import MoneyChange from "./MoneyChange";
 import { householdIncome } from "@/lib/game/journey/family";
@@ -7,7 +8,12 @@ import AssetShop from "./AssetShop";
 import { assetAnnual } from "@/lib/game/journey/assets";
 import { useState } from "react";
 import { journeyAction, type Life } from "@/lib/game";
-import { annualExpenses, debtPayment, financeLocked } from "@/lib/game/journey/finance";
+import {
+  annualExpenses,
+  debtPayment,
+  financeLocked,
+  graduated,
+} from "@/lib/game/journey/finance";
 import { ventures, policyTerms } from "@/lib/game/ventures";
 import { baht } from "@/lib/format";
 import GameIcon from "../game/GameIcon";
@@ -43,9 +49,9 @@ export default function FinanceScreen({
   return (
     <div className="finance-screen">
       <h2>การเงิน</h2>
-      {!j.hasWorked && (
+      {!graduated(life) && (
         <p>
-          ใช้เงินส่วนตัวจากฐานะครอบครัว · ค่าครองชีพและลูกต่อปีเป็น 0 จนเริ่มงานแรก
+          ใช้เงินส่วนตัวจากฐานะครอบครัว · ค่าครองชีพและลูกต่อปีเป็น 0 จนเรียนจบ
           เงินเพิ่มได้จากเหตุการณ์พิเศษ
         </p>
       )}
@@ -78,6 +84,14 @@ export default function FinanceScreen({
             <dt>ค่างวดบ้านและรถ / ปี</dt>
             <dd>
               <MoneyChange amount={-assetAnnual(life)} />
+            </dd>
+          </div>
+          <div>
+            <dt>หวยรายปี</dt>
+            <dd>
+              <MoneyChange
+                amount={e.lottery?.active ? -gameConfig.lottery.annualCost : 0}
+              />
             </dd>
           </div>
           <div>
@@ -155,42 +169,14 @@ export default function FinanceScreen({
       </details>
       <details className="simple-details">
         <summary>
-          เงินลงทุนและหวย <span>พอร์ต ฿{baht(e.fund + e.crypto)}</span>
-        </summary>
-        <p>
-          กองทุน ฿{baht(e.fund)} · คริปโต ฿{baht(e.crypto)}
-        </p>
-        {ventures
-          .filter((v) => ["lottery"].includes(v.id))
-          .map((item) => (
-            <div className="finance-item" key={item.id}>
-              <p>
-                <GameIcon name={item.icon} size={17} />
-                <strong>{item.label}</strong>
-                {item.cost > 0 && <MoneyChange amount={-item.cost} />}
-              </p>
-              <small>{item.detail}</small>
-              {button(item.id, "เลือก " + item.label)}
-            </div>
-          ))}
-      </details>
-      <details className="simple-details">
-        <summary>
-          ประกันชีวิต{" "}
-          <span>
-            {e.policy === "none"
-              ? "ไม่มีแผน"
-              : e.policy === "basic"
-                ? "พื้นฐาน"
-                : "ครอบครัว"}
-          </span>
+          ประกันชีวิต <span>{policyTerms[e.policy].label}</span>
         </summary>
         <p>
           จ่ายเบี้ยทันทีและต่อทุกปี หากเงินไม่พอความคุ้มครองสิ้นสุด
           เงินเสียชีวิตแยกให้คนข้างหลัง
         </p>
         {ventures
-          .filter((v) => ["basic", "family", "cancel-policy"].includes(v.id))
+          .filter((v) => ["basic", "family", "premium", "cancel-policy"].includes(v.id))
           .map((item) => (
             <div className="finance-item" key={item.id}>
               <strong>{item.label}</strong>

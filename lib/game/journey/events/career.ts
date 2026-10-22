@@ -1,3 +1,4 @@
+import { offeredSalary, promotedSalary } from "../salary.ts";
 import { educationBonus } from "../education.ts";
 import { careerPaths, positionTitle } from "../career-paths.ts";
 import { careerIncome } from "../catalog.ts";
@@ -19,9 +20,7 @@ export function careerOffer(life: Life, kind: "first" | "offer" | "loss" = "offe
       option(
         job.label,
         "เงินเดือนเริ่มต้น " +
-          Math.round(careerIncome(job.id, 0, life.location) / 12).toLocaleString(
-            "th-TH",
-          ) +
+          Math.round(offeredSalary(life, job.id) / 12).toLocaleString("th-TH") +
           " บาท" +
           (educationBonus(life, job.id)
             ? " · การเรียนตรงสาย +" + educationBonus(life, job.id) + " จุดเปอร์เซ็นต์"
@@ -74,7 +73,7 @@ export function promotionEvent(life: Life) {
     path = careerPaths[career.id],
     max = career.rank >= 3;
   const heat = !max && riskyJobs.has(career.id) ? gameConfig.dark.promotionHeat : 0;
-  const nextIncome = careerIncome(career.id, Math.min(3, career.rank + 1), life.location);
+  const nextIncome = promotedSalary(life);
   return event(
     life,
     "promotion-" + life.age,

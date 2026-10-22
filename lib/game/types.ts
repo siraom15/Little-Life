@@ -32,6 +32,11 @@ export type Entry = {
   detail: string;
   category: string;
   cause?: string;
+  assetSnapshot?: {
+    house: Journey["house"];
+    car: Journey["car"];
+    extraCars: Journey["extraCars"];
+  };
   outcomeSuccess?: boolean;
   location?: string;
   money: number;
@@ -60,6 +65,7 @@ export type SceneKind =
   "birth" | "home" | "hospital" | "festival" | "travel" | "gift" | "death" | "prison";
 export type LifeNotice = {
   visual?:
+    | "lottery"
     | "red-envelope"
     | "grave"
     | "level-up"
@@ -98,7 +104,8 @@ export type Simulation = {
 export type Economy = {
   fund: number;
   crypto: number;
-  policy: "none" | "basic" | "family";
+  policy: "none" | "basic" | "family" | "premium";
+  lottery?: { active: boolean; years: number; lastDrawAge: number };
   insuredAt: number;
   beneficiaryPayout: number;
   heat: number;

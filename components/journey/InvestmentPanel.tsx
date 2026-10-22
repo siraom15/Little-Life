@@ -1,4 +1,5 @@
 "use client";
+import LotteryPanel from "./LotteryPanel";
 import type { Life } from "@/lib/game";
 import { journeyAction } from "@/lib/game";
 import { financeLocked } from "@/lib/game/journey/finance";
@@ -22,6 +23,12 @@ export default function InvestmentPanel({
   return (
     <section className="simple-card">
       <h3>ตลาดลงทุน</h3>
+      <p>
+        มูลค่าพอร์ตรวม ฿
+        {investmentKeys
+          .reduce((sum, key) => sum + investmentValue(life, key), 0)
+          .toLocaleString("th-TH")}
+      </p>
       {investmentKeys.map((key, i) => (
         <div className="investment-row" key={key}>
           <strong>
@@ -100,6 +107,7 @@ export default function InvestmentPanel({
       {life.journey!.investment.nextReport >= 0 && (
         <small>รายงานถัดไปอายุ {life.journey!.investment.nextReport} ปี</small>
       )}
+      <LotteryPanel life={life} setLife={setLife} shared={shared} />
     </section>
   );
 }

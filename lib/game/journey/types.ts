@@ -55,7 +55,7 @@ export type Outcome = {
 };
 export type StoryChoice = Choice & {
   assetAction?: string;
-  policyAction?: "basic" | "family";
+  policyAction?: "basic" | "family" | "premium";
   chance?: { base: number; skill?: Skill; stat?: Stat; statWeight?: number };
   success: Outcome;
   failure?: Outcome;
@@ -119,7 +119,8 @@ export type Journey = {
   children: Child[];
   stopHavingChildren?: boolean;
   frozenMoney?: number;
-  career: { id: string; rank: number; since: number } | null;
+  lastSalary?: number;
+  career: { id: string; rank: number; since: number; baseSalary?: number } | null;
   debt: number;
   arrears: number;
   creditUntil: number;

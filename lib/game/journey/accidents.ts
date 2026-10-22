@@ -1,3 +1,4 @@
+import { policyTerms } from "../ventures.ts";
 import type { Life, LifeNotice } from "../types.ts";
 import { randomAt } from "../random.ts";
 import { gameConfig } from "./config.ts";
@@ -83,7 +84,9 @@ export function resolveAccident(life: Life, kind: AccidentKind) {
       cfg.minimumBill,
       Math.round((life.money + e.fund + e.crypto + j.investment.stock) * rate),
     );
-    const debt = payEmergencyBill(life, bill);
+    const coverage = policyTerms[e.policy].accidentCover;
+    const covered = Math.floor(bill * coverage);
+    const debt = payEmergencyBill(life, bill - covered);
     life.stats.health = Math.max(1, life.stats.health - cfg.healthDamage);
     life.stats.happy = Math.max(0, life.stats.happy - 20);
     j.health.hospitalUntil = Math.max(
@@ -94,9 +97,15 @@ export function resolveAccident(life: Life, kind: AccidentKind) {
     notice.effects =
       "ค่ารักษา −฿" +
       bill.toLocaleString("th-TH") +
+      " · ประกันช่วย " +
+      Math.round(coverage * 100) +
+      "% (+฿" +
+      covered.toLocaleString("th-TH") +
+      ") · จ่ายเอง −฿" +
+      (bill - covered).toLocaleString("th-TH") +
       " · ใช้เงินสดและขายพอร์ต" +
       (debt ? " · หนี้เพิ่ม ฿" + debt.toLocaleString("th-TH") : "") +
-      " · หยุดรับเงินเดือนขณะรักษา (ประกันชีวิตไม่จ่ายค่ารักษา)";
+      " · หยุดรับเงินเดือนขณะรักษา";
   }
   life.history.push({
     id: notice.id,

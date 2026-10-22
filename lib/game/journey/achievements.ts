@@ -80,7 +80,11 @@ export function lifeHighlights(life: Life) {
     )
       return 0;
     const text = e.title + " " + e.choice;
-    if (/เสียชีวิต|ล้มละลาย|แต่งงาน|คลอด|กำเนิด|มีลูก|ถูกจับ|รับโทษ/.test(text)) return 4;
+    if (/ถูกรางวัล/.test(text) && !/ไม่ถูกรางวัล/.test(text)) return 5;
+    if (e.id.startsWith("inherit-")) return 0;
+    if (e.id.startsWith("asset-") && /ได้เป็นเจ้าของ|ผ่อนหมด/.test(text)) return 4;
+    if (/จากไป|เสียชีวิต|ล้มละลาย|แต่งงาน|คลอด|กำเนิด|มีลูก|ถูกจับ|รับโทษ/.test(text))
+      return 4;
     if (/เลื่อน|ย้าย|ต่างแดน|มะเร็ง|วินิจฉัย|อุบัติเหตุ|ไฟไหม้/.test(text)) return 3;
     if (/งานแรก|เกษียณ|ซื้อบ้าน|บ้านหลังแรก|มหาวิทยาลัย/.test(text)) return 2;
     return 0;
@@ -89,7 +93,7 @@ export function lifeHighlights(life: Life) {
     .map((entry, index) => ({ entry, index, score: importance(entry) }))
     .filter((x) => x.score > 0)
     .sort((a, b) => b.score - a.score || a.index - b.index)
-    .slice(0, 6)
+    .slice(0, 8)
     .sort((a, b) => a.index - b.index)
     .map((x) => x.entry);
   const birth: Entry = {

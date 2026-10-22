@@ -9,6 +9,23 @@ export type Venture = {
   minAge?: number;
 };
 export const ventures: Venture[] = [
+  {
+    id: "cancel-lottery",
+    label: "ยกเลิกซื้อหวยรายปี",
+    detail: "หยุดรายจ่ายและรีเซ็ตโอกาสกลับไป 2%",
+    icon: "ticket",
+    cost: 0,
+    group: "ลงทุน",
+    minAge: 20,
+  },
+  {
+    id: "premium",
+    label: "ประกันอุ่นใจสูงสุด",
+    detail: "เบี้ย 18,000/ปี · เสียชีวิต 1,500,000 · อุบัติเหตุ 90% · รักษาโรค 80%",
+    icon: "shield",
+    cost: 18000,
+    group: "ประกัน",
+  },
   ...careers.map((job) => ({
     id: "job-" + job.id,
     label: "สมัคร: " + job.label,
@@ -51,17 +68,19 @@ export const ventures: Venture[] = [
   },
   {
     id: "lottery",
-    label: "ซื้อหวย 1 ใบ",
-    detail: "80 บาท · โอกาสถูกรางวัล 2% รับ 8,000,000 · อีก 98% เสียค่าหวย",
+    label: "ซื้อหวยทุกปี",
+    detail:
+      "80 บาท/ปี · เริ่ม 2% เพิ่มปีละ 1 จุดเปอร์เซ็นต์ · รางวัล 8,000,000 · เริ่มซื้อปีหน้า",
     icon: "ticket",
-    cost: 80,
+    cost: 0,
     group: "ลงทุน",
     minAge: 20,
   },
   {
     id: "basic",
     label: "ประกันชีวิตพื้นฐาน",
-    detail: "เบี้ย 3,000/ปี · เงินถึงผู้รับผลประโยชน์ 150,000 เมื่อเสียชีวิต",
+    detail:
+      "เบี้ย 3,000/ปี · เงินถึงผู้รับผลประโยชน์ 150,000 เมื่อเสียชีวิต · อุบัติเหตุ 60% · รักษาโรค 40%",
     icon: "shield",
     cost: 3000,
     group: "ประกัน",
@@ -69,7 +88,8 @@ export const ventures: Venture[] = [
   {
     id: "family",
     label: "ประกันชีวิตครอบครัว",
-    detail: "เบี้ย 8,000/ปี · เงินถึงผู้รับผลประโยชน์ 500,000 เมื่อเสียชีวิต",
+    detail:
+      "เบี้ย 8,000/ปี · เงินถึงผู้รับผลประโยชน์ 500,000 เมื่อเสียชีวิต · อุบัติเหตุ 75% · รักษาโรค 60%",
     icon: "shield",
     cost: 8000,
     group: "ประกัน",
@@ -136,7 +156,32 @@ export const ventures: Venture[] = [
   },
 ];
 export const policyTerms = {
-  none: { premium: 0, payout: 0 },
-  basic: { premium: 3000, payout: 150000 },
-  family: { premium: 8000, payout: 500000 },
+  none: {
+    label: "ไม่มีประกัน",
+    premium: 0,
+    payout: 0,
+    accidentCover: 0,
+    diseaseCover: 0,
+  },
+  basic: {
+    label: "พื้นฐาน",
+    premium: 3000,
+    payout: 150000,
+    accidentCover: 0.6,
+    diseaseCover: 0.4,
+  },
+  family: {
+    label: "ครอบครัว",
+    premium: 8000,
+    payout: 500000,
+    accidentCover: 0.75,
+    diseaseCover: 0.6,
+  },
+  premium: {
+    label: "อุ่นใจสูงสุด",
+    premium: 18000,
+    payout: 1500000,
+    accidentCover: 0.9,
+    diseaseCover: 0.8,
+  },
 };

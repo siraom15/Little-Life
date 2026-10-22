@@ -25,7 +25,7 @@ test("personal starting money varies by family and never increases automatically
     assert.ok([20000, 80000, 200000].includes(l.money));
     const initial = l.money;
     l.simulation!.notice = null;
-    for (let age = 1; age <= 21; age++) {
+    for (let age = 1; age <= 17; age++) {
       l.age = age;
       yearlyFinance(l);
       assert.equal(l.money, initial);
@@ -60,11 +60,11 @@ test("red envelope immediately credits personal wallet once with no parent withd
   assert.deepEqual(l.journey!.parents, parents);
   assert.equal(journeyAction(l, { type: "choice", index: 0 }), l);
 });
-test("living and child costs begin after first job", () => {
+test("living and child costs begin after graduation even without work", () => {
   const l = createGameLife(0);
   l.age = 25;
   l.journey!.children.push({ name: "ลูก", bornAt: 24 });
-  assert.equal(annualExpenses(l), 0);
+  assert.equal(annualExpenses(l), 156000);
   l.journey!.hasWorked = true;
   assert.equal(annualExpenses(l), 156000);
 });

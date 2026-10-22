@@ -92,6 +92,15 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
       visual: "portfolio",
       chart: life.journey!.investment.points.filter((p) => p.age <= frame.age),
     };
+  if (frame.id.startsWith("lottery-") && !/ไม่ถูกรางวัล/.test(frame.choice))
+    illustration.simulation!.notice = {
+      id: frame.id,
+      title: frame.title,
+      text: frame.detail,
+      scene: "gift",
+      effects: "",
+      visual: "lottery",
+    };
   const accident = accidentTypes.find((a) =>
     frame.id.startsWith("accident-" + a.id + "-"),
   );
@@ -104,9 +113,9 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
       effects: "",
       accident: accident.id,
     };
-  illustration.journey!.house = null;
-  illustration.journey!.car = null;
-  illustration.journey!.extraCars = [];
+  illustration.journey!.house = frame.assetSnapshot?.house || null;
+  illustration.journey!.car = frame.assetSnapshot?.car || null;
+  illustration.journey!.extraCars = frame.assetSnapshot?.extraCars || [];
   return (
     <section className="life-film" aria-label="หนังสั้นชีวิต">
       <header>
@@ -165,7 +174,7 @@ export default function LifeFilm({ life, onClose }: { life: Life; onClose: () =>
           ถัดไป
         </button>
       </nav>
-      <small>ฉากประกอบจากบันทึกจริงของตัวละคร • ยังไม่ใช่ไฟล์วิดีโอ</small>
+      <small>ฉากประกอบจากบันทึกจริงของตัวละคร</small>
     </section>
   );
 }

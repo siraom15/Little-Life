@@ -36,7 +36,10 @@ export default function LifeGame() {
     "life",
   );
   const imprisoned = !!life && !life.done && isImprisoned(life);
-  const clock = useGameClock(life, setLife, shared || !!modal || tab !== "life", shared);
+  const clock = useGameClock(life, setLife, shared || !!modal, shared);
+  useEffect(() => {
+    clock.setRunning(tab === "life");
+  }, [tab]);
   useEffect(() => {
     setTab("life");
     clock.setRunning(true);
@@ -156,7 +159,6 @@ export default function LifeGame() {
                     life={life}
                     setLife={setLife}
                     shared={shared}
-                    restart={() => setModal("restart")}
                     onSelf={() => setTab("self")}
                   />
                 </div>

@@ -1,3 +1,4 @@
+import { policyTerms } from "../ventures.ts";
 import type { Life } from "../types.ts";
 import type { Outcome } from "./types.ts";
 import { gameConfig } from "./config.ts";
@@ -85,7 +86,7 @@ export function diseaseEvent(life: Life) {
   const model = diseases[d.id],
     base = model.recovery[d.stage - 1];
   const goal = model.canRecover
-    ? "โรคสงบและจบการรักษารอบนี้"
+    ? "รักษาหายขาดจากโรคครั้งนี้"
     : "ควบคุมอาการ ลดความรุนแรง 1 ระดับ (ไม่ใช่รักษาหาย)";
   const choice = (
     care: NonNullable<Outcome["diseaseCare"]>,
@@ -99,7 +100,9 @@ export function diseaseEvent(life: Life) {
       { diseaseCare: care, diseaseRecovered: true },
       {
         icon: "heart",
-        cost,
+        cost: Math.ceil(
+          cost * (1 - policyTerms[life.simulation!.economy!.policy].diseaseCover),
+        ),
         chance: { base: Math.min(95, base + bonus) },
         failure: { diseaseCare: care },
         successText: goal,
@@ -112,7 +115,9 @@ export function diseaseEvent(life: Life) {
     "วางแผนรักษา: " + diseaseLabel(life),
     "ความเสี่ยงเสียชีวิตจากโรคปีนี้ประมาณ " +
       Math.round(seriousDiseaseRisk(life) * 100) +
-      "% · ประกันชีวิตจ่ายให้คนข้างหลัง ไม่จ่ายค่ารักษา",
+      "% · ประกันช่วยค่ารักษา " +
+      Math.round(policyTerms[life.simulation!.economy!.policy].diseaseCover * 100) +
+      "% (ราคาตัวเลือกหักแล้ว)",
     [
       choice("standard", "รักษาตามแผน", 12000 * d.stage, 0),
       choice("intensive", "รักษาเข้มข้น", 30000 * d.stage, 15),
@@ -153,7 +158,7 @@ export function applyDiseaseCare(
     } else d.stage = Math.max(1, d.stage - 1);
     life.journey!.queue.push({
       id: "recovery-" + life.age,
-      title: model.canRecover ? "ข่าวดี! โรคสงบแล้ว" : "ควบคุมอาการได้ดีขึ้น",
+      title: model.canRecover ? "ข่าวดี! รักษาหายขาดแล้ว" : "ควบคุมอาการได้ดีขึ้น",
       text:
         model.name +
         (model.canRecover
