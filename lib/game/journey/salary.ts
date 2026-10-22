@@ -1,8 +1,14 @@
+import { gameConfig } from "./config.ts";
 import type { Life } from "../types.ts";
 import { careerIncome, jobs } from "./catalog.ts";
 import { randomAt } from "../random.ts";
 export function offeredSalary(life: Life, id: string, location = life.location) {
   const base = careerIncome(id, 0, location);
+  if (life.age >= 60)
+    return Math.round(
+      Math.max(base, life.income, life.journey!.lastSalary || 0) *
+        gameConfig.retirement.work.continue.incomeRate,
+    );
   if (!life.journey!.hasWorked) return base;
   const channel =
     340 +

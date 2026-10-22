@@ -37,6 +37,7 @@ export type Outcome = {
   promote?: boolean;
   promotionTitle?: string;
   retirementIncome?: number;
+  retirementWork?: "consulting" | "handover" | "continue";
   habit?: "exercise" | "alcohol" | "smoking" | "drugs" | "rehab";
   loseJob?: boolean;
   diseaseCare?: "standard" | "intensive" | "public" | "support" | "defer";
@@ -76,6 +77,7 @@ export type Journey = {
   homeless: boolean;
   hasWorked: boolean;
   retirement: string;
+  retirementWork?: "consulting" | "handover" | "continue";
   completedMissions: string[];
   milestonesScore?: {
     healthyYears: number;

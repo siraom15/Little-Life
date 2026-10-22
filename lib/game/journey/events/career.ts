@@ -1,3 +1,4 @@
+import { retirementWorkTerms, retirementWorkDetail } from "../retirement.ts";
 import { offeredSalary, promotedSalary } from "../salary.ts";
 import { educationBonus } from "../education.ts";
 import { careerPaths, positionTitle } from "../career-paths.ts";
@@ -22,6 +23,13 @@ export function careerOffer(life: Life, kind: "first" | "offer" | "loss" = "offe
         "เงินเดือนเริ่มต้น " +
           Math.round(offeredSalary(life, job.id) / 12).toLocaleString("th-TH") +
           " บาท" +
+          (life.age >= 60
+            ? " · งานหลังเกษียณ รายได้เหลือ " +
+              Math.round(gameConfig.retirement.work.continue.incomeRate * 100) +
+              "% ของฐาน · สุขภาพ −" +
+              gameConfig.retirement.work.continue.healthLossPerYear +
+              " ทุกปีที่ทำงาน"
+            : "") +
           (educationBonus(life, job.id)
             ? " · การเรียนตรงสาย +" + educationBonus(life, job.id) + " จุดเปอร์เซ็นต์"
             : " · ไม่มีโบนัสตรงสาย") +
@@ -130,14 +138,18 @@ export function promotionEvent(life: Life) {
 export function retirementEvent(life: Life) {
   const id = life.journey!.career?.id || life.journey!.careerHistory.at(-1),
     path = id ? careerPaths[id] : null;
-  const pension = Math.round(life.income * 0.25),
-    consulting = Math.round(life.income * 0.45);
+  const pension = retirementWorkTerms(life, "handover").income,
+    consulting = retirementWorkTerms(life, "consulting").income;
   return event(
     life,
     "retire",
     "ออกแบบชีวิตหลังวัยทำงาน",
     path
-      ? "ประสบการณ์จาก " + life.job + " เปิดทางให้ " + path.retirement
+      ? "ประสบการณ์จาก " +
+          life.job +
+          " เปิดทางให้ " +
+          path.retirement +
+          " · งานทุกแบบหลังวัยเกษียณจ่ายน้อยลงมากและเสียสุขภาพทุกปี คิดถึงเงินเก็บและเวลาที่เหลือก่อนเลือก"
       : "เลือกวิถีชีวิตที่เหมาะกับเงินเก็บและสุขภาพ",
     [
       option(
@@ -148,24 +160,41 @@ export function retirementEvent(life: Life) {
       ),
       option(
         path?.retirement || "รับงานเบาแรง",
-        "รายได้ ฿" + consulting.toLocaleString("th-TH") + "/ปี · ลดความร้อน 20",
-        { retire: true, retirementIncome: consulting, heat: -20 },
+        retirementWorkDetail(life, "consulting") + " · ลดความร้อน 20",
+        {
+          retire: true,
+          retirementWork: "consulting",
+          retirementIncome: consulting,
+          heat: -20,
+        },
         { icon: "book" },
       ),
       option(
-        "ส่งต่อกิจการและรับส่วนแบ่ง",
-        "รายได้ ฿" + pension.toLocaleString("th-TH") + "/ปี",
-        { retire: true, retirementIncome: pension, stats: { social: 8 } },
+        "ส่งต่อกิจการและช่วยดูแลต่อ",
+        retirementWorkDetail(life, "handover") +
+          " · หากไม่สำเร็จจะหยุดงาน ไม่มีรายได้งาน",
+        {
+          retire: true,
+          retirementWork: "handover",
+          retirementIncome: pension,
+          stats: { social: 8 },
+        },
         {
           icon: "users",
           chance: { base: 45, skill: "business", stat: "social" },
-          failure: { stats: { happy: -5 } },
+          failure: { retire: true, stats: { happy: -5 } },
+          failureText:
+            "ส่งต่อกิจการไม่สำเร็จ จึงพักเต็มตัว ไม่มีรายได้งานและไม่มีภาระสุขภาพจากงาน",
         },
       ),
       option(
         "ทำงานเดิมต่อ",
-        "รายได้เดิม · สุขภาพ -5",
-        { stats: { health: -5 } },
+        retirementWorkDetail(life, "continue"),
+        {
+          retire: true,
+          retirementWork: "continue",
+          retirementIncome: retirementWorkTerms(life, "continue").income,
+        },
         { icon: "briefcase" },
       ),
       option(

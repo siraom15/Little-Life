@@ -1,3 +1,4 @@
+import { yearlyRetirementWork } from "./retirement.ts";
 import { offeredSalary, promotedSalary } from "./salary.ts";
 import { choiceCredit } from "./choice-credit.ts";
 import { abroadEvent } from "./abroad.ts";
@@ -150,6 +151,7 @@ function refreshSkills(life: Life) {
 function setCareer(life: Life, id: string) {
   const job = jobs.find((job) => job.id === id);
   if (!job) return;
+  life.journey!.retirementWork = undefined;
   life.journey!.career = { id, rank: 0, since: life.age };
   if (!life.journey!.careerHistory.includes(id)) life.journey!.careerHistory.push(id);
   const salary = offeredSalary(life, id);
@@ -159,7 +161,10 @@ function setCareer(life: Life, id: string) {
 
   life.job = positionTitle(id, 0);
   life.income = salary;
-  life.flags = life.flags.filter((flag) => flag !== "retired");
+  if (life.age >= 60) {
+    life.journey!.retirementWork = "continue";
+    if (!life.flags.includes("retired")) life.flags.push("retired");
+  } else life.flags = life.flags.filter((flag) => flag !== "retired");
 }
 function applyOutcome(life: Life, result: Outcome) {
   const j = life.journey!;
@@ -210,7 +215,8 @@ function applyOutcome(life: Life, result: Outcome) {
   if (result.retire) {
     j.career = null;
     j.retirement = life.job;
-    life.job = "เกษียณจาก " + j.retirement;
+    j.retirementWork = result.retirementWork;
+    life.job = (j.retirementWork ? "ทำงานหลังเกษียณจาก " : "เกษียณจาก ") + j.retirement;
     life.income = result.retirementIncome || 0;
     if (!life.flags.includes("retired")) life.flags.push("retired");
     j.queue.push({
@@ -218,7 +224,15 @@ function applyOutcome(life: Life, result: Outcome) {
       title: "บทใหม่หลังวัยทำงาน",
       text: life.job,
       scene: "home",
-      effects: "รายได้ใหม่ ฿" + life.income.toLocaleString("th-TH") + "/ปี",
+      effects:
+        "รายได้ใหม่ ฿" +
+        life.income.toLocaleString("th-TH") +
+        "/ปี" +
+        (j.retirementWork
+          ? " · สุขภาพ −" +
+            gameConfig.retirement.work[j.retirementWork].healthLossPerYear +
+            " ทุกปีที่ทำงาน"
+          : " · หยุดภาระสุขภาพจากงาน"),
     });
   }
   if (result.relationship === "meet") {
@@ -371,6 +385,7 @@ function stepYear(life: Life) {
   yearlyFinance(life, wasImprisoned);
   applyAssetBenefits(life);
   yearlyDisease(life);
+  yearlyRetirementWork(life, wasImprisoned);
   const healthCause = yearlyHealth(life);
   const scores = (j.milestonesScore ??= {
     healthyYears: 0,

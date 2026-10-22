@@ -1,5 +1,5 @@
 {
-  "revision": 13,
+  "revision": 14,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
@@ -227,6 +227,22 @@
         "livingCost": 150000,
         "moveCost": 55000,
         "job": "germany-engineer"
+      }
+    }
+  },
+  "retirement": {
+    "work": {
+      "consulting": {
+        "incomeRate": 0.15,
+        "healthLossPerYear": 4
+      },
+      "handover": {
+        "incomeRate": 0.1,
+        "healthLossPerYear": 3
+      },
+      "continue": {
+        "incomeRate": 0.25,
+        "healthLossPerYear": 8
       }
     }
   }
