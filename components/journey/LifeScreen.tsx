@@ -1,3 +1,4 @@
+import { rememberEnding } from "@/lib/browser/ending-memory";
 import ChoiceLoanDialog from "./ChoiceLoanDialog";
 import { choiceCredit } from "@/lib/game/journey/choice-credit";
 import { encodeLife } from "@/lib/game";
@@ -84,6 +85,7 @@ export default function LifeScreen({
           <FuneralSummary life={life} />
           <a
             className="primary-action ending-invitation"
+            onClick={() => rememberEnding(life, encodeLife(life))}
             href={"/ending/#life=" + encodeURIComponent(encodeLife(life))}
           >
             🏆 เปิดสมุดความทรงจำ → ดูถ้วยและเรื่องราวของคุณ

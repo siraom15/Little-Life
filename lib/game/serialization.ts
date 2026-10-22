@@ -7,7 +7,7 @@ export function encodeLife(life: Life) {
     life.version === 8
       ? {
           format: "little-life-v8",
-          balanceRevision: gameConfig.revision,
+          balanceRevision: life.journey!.balanceRevision,
           seed: life.seed,
           name: life.name,
           actions: life.simulation!.actions,

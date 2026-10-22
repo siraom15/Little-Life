@@ -75,8 +75,8 @@ test("children only receive age-appropriate stories and 24 new stories have five
       const l = createGameLife(seed);
       l.age = age;
       const e = randomStory(l);
-      assert.ok(!/friend-|career-|scam-|ethics-|travel-/.test(e.id));
-      assert.ok(extraStories(l).some((s) => s.id === e.id));
+      assert.ok(!/^(friend|career|scam|ethics|travel)-/.test(e.id));
+      assert.ok(e.id.startsWith("social-") || extraStories(l).some((s) => s.id === e.id));
       assert.equal(e.choices.length, 5);
     }
   const l = createGameLife(1);

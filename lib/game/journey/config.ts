@@ -13,6 +13,7 @@ nonNegative(balance, "game-balance");
 for (const [path, value] of Object.entries({
   overseasOffer: balance.abroad.offerChance,
   lottery: balance.lottery.chance,
+  relationshipShare: balance.events.relationshipShare,
   confiscation: balance.prison.confiscationChance,
   healthEvent: balance.health.eventChance,
   healthAdult: balance.health.eventChance20to40,

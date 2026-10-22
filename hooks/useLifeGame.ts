@@ -1,4 +1,5 @@
 "use client";
+import { recallEnding } from "@/lib/browser/ending-memory";
 import { randomCharacterName } from "@/lib/game/names";
 import { Life, createGameLife, decodeLife } from "@/lib/game";
 import { useEffect, useRef, useState } from "react";
@@ -31,7 +32,8 @@ export function useLifeGame() {
       if (hash.has("new")) {
         setLife(null);
       } else if (hash.has("life")) {
-        const imported = decodeLife(hash.get("life") || "");
+        const encoded = hash.get("life") || "";
+        const imported = recallEnding(encoded) || decodeLife(encoded);
         if (imported?.version === 8) {
           setLife(imported);
           setShared(true);

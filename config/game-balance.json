@@ -1,5 +1,5 @@
 {
-  "revision": 14,
+  "revision": 15,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
@@ -136,7 +136,8 @@
     "randomChance": 0.28,
     "cooldownYears": 1,
     "layoffChance": 0.045,
-    "redEnvelopeChance": 0.16
+    "redEnvelopeChance": 0.16,
+    "relationshipShare": 0.35
   },
   "education": {
     "matchingCareerBonus": 25,

@@ -4,6 +4,7 @@ import { encodeLife, decodeLife, type Life } from "@/lib/game";
 import { loadLife, storyLink } from "@/lib/browser/life-storage";
 import { endingAchievements } from "@/lib/game/journey/achievements";
 import { endingCardSvg } from "@/lib/game/journey/ending-card";
+import { recallEnding } from "@/lib/browser/ending-memory";
 import HistoryScreen from "../journey/HistoryScreen";
 import EndingDetails from "./EndingDetails";
 import LifeFilm from "./LifeFilm";
@@ -19,8 +20,15 @@ export default function EndingPage() {
   useEffect(() => {
     try {
       const hash = new URLSearchParams(location.hash.slice(1));
-      const value = hash.has("life") ? decodeLife(hash.get("life") || "") : loadLife();
+      const encoded = hash.get("life") || "";
+      const value = hash.has("life")
+        ? recallEnding(encoded) || decodeLife(encoded)
+        : loadLife();
       if (value?.done) setLife(value);
+      else if (hash.has("life"))
+        setMessage(
+          "ลิงก์นี้อ่านผลชีวิตที่จบแล้วไม่ได้ อาจสร้างจากกติกาคนละเวอร์ชัน ลองกลับไปเปิดสมุดจากหน้างานศพอีกครั้ง",
+        );
     } catch {
       setMessage("อ่านบทสรุปนี้ไม่ได้");
     }

@@ -1,3 +1,5 @@
+import { socialStories } from "./social-stories.ts";
+import { gameConfig } from "../config.ts";
 import { extraStories } from "./extra-stories.ts";
 import { opportunities } from "./opportunities.ts";
 import type { Life } from "../../types.ts";
@@ -7,6 +9,14 @@ import { randomAt } from "../../random.ts";
 import { careerOffer, promotionEvent } from "./career.ts";
 import { relationshipEvent } from "./relationships.ts";
 export function randomStory(life: Life): StoryEvent {
+  const relationships = socialStories(life);
+  if (
+    relationships.length &&
+    randomAt(life.seed, life.age, 360) < gameConfig.events.relationshipShare
+  )
+    return relationships[
+      Math.floor(randomAt(life.seed, life.age, 361) * relationships.length)
+    ];
   const j = life.journey!,
     pool: StoryEvent[] = [...opportunities(life), ...extraStories(life)];
   pool.push(
