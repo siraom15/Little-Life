@@ -1,3 +1,4 @@
+import { lotteryPercent } from "./journey/lottery.ts";
 import { gameConfig } from "./journey/config.ts";
 import { careers } from "./careers.ts";
 import type { Economy, Life } from "./types.ts";
@@ -96,11 +97,19 @@ export function applyVenture(life: Life, id: string): boolean {
       break;
     case "lottery":
       e.lottery = { active: true, years: 0, lastDrawAge: life.age };
-      result = "เปิดซื้อหวยปีละ 80 บาท เริ่มปีหน้า · โอกาสเริ่มต้น 2%";
+      result =
+        "เปิดซื้อหวยปีละ " +
+        gameConfig.lottery.annualCost +
+        " บาท เริ่มปีหน้า · โอกาสเริ่มต้น " +
+        lotteryPercent(gameConfig.lottery.chance) +
+        "%";
       break;
     case "cancel-lottery":
       e.lottery = { active: false, years: 0, lastDrawAge: life.age };
-      result = "ยกเลิกซื้อรายปีแล้ว โอกาสกลับไป 2%";
+      result =
+        "ยกเลิกซื้อรายปีแล้ว โอกาสกลับไป " +
+        lotteryPercent(gameConfig.lottery.chance) +
+        "%";
       break;
     case "volunteer":
       e.reputation = bound(e.reputation + 12);

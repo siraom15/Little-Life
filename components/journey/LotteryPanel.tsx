@@ -1,7 +1,7 @@
 import type { Life } from "@/lib/game";
 import { journeyAction } from "@/lib/game";
 import { financeLocked } from "@/lib/game/journey/finance";
-import { lotteryChance } from "@/lib/game/journey/lottery";
+import { lotteryChance, lotteryPercent } from "@/lib/game/journey/lottery";
 import { gameConfig } from "@/lib/game/journey/config";
 export default function LotteryPanel({
   life,
@@ -20,11 +20,18 @@ export default function LotteryPanel({
       <h3>🎟 หวยรายปี</h3>
       <strong>
         รางวัล ฿{gameConfig.lottery.prize.toLocaleString("th-TH")} · งวดถัดไป{" "}
-        {Math.round(lotteryChance(life) * 100)}%
+        {lotteryPercent(lotteryChance(life))}%
       </strong>
       <p>
-        ซื้อปีละ ฿{gameConfig.lottery.annualCost} · โอกาสเพิ่มปีละ 1
-        จุดเปอร์เซ็นต์เมื่อซื้อต่อเนื่อง (สูงสุด 100%) · ยกเลิกแล้วกลับไป 2%
+        ซื้อปีละ ฿{gameConfig.lottery.annualCost} · เริ่ม{" "}
+        {lotteryPercent(gameConfig.lottery.chance)}% · โอกาสเพิ่มปีละ{" "}
+        {lotteryPercent(gameConfig.lottery.annualIncrease)}{" "}
+        จุดเปอร์เซ็นต์เมื่อซื้อต่อเนื่อง (สูงสุด{" "}
+        {lotteryPercent(gameConfig.lottery.maxChance)}%) · ยกเลิกแล้วกลับไป{" "}
+        {lotteryPercent(gameConfig.lottery.chance)}%
+        {gameConfig.lottery.resetOnWin && (
+          <> · ถูกรางวัลแล้วกลับไป {lotteryPercent(gameConfig.lottery.chance)}%</>
+        )}
       </p>
       <p>
         {active

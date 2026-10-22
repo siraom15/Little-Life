@@ -23,22 +23,22 @@ function fixture() {
   l.simulation!.notice = null;
   return l;
 }
-test("annual lottery charges once, increases one point, cancels and resets without redraw", () => {
+test("annual lottery charges once, increases 0.2 points, cancels and resets without redraw", () => {
   const l = fixture();
   assert.ok(financeAction(l, "lottery"));
   l.simulation!.notice = null;
   const before = l.money;
   yearlyLottery(l);
   assert.equal(l.money, before);
-  assert.equal(lotteryChance(l), 0.02);
+  assert.equal(lotteryChance(l), 0.01);
   l.age++;
   yearlyLottery(l);
-  assert.equal(lotteryChance(l), 0.03);
+  assert.equal(lotteryChance(l), 0.012);
   const cash = l.money;
   yearlyLottery(l);
   assert.equal(l.money, cash);
   assert.ok(financeAction(l, "cancel-lottery"));
-  assert.equal(lotteryChance(l), 0.02);
+  assert.equal(lotteryChance(l), 0.01);
   l.simulation!.notice = null;
   assert.ok(financeAction(l, "lottery"));
   yearlyLottery(l);
@@ -154,4 +154,29 @@ test("film includes major purchases and lottery, at most ten chronological frame
     frames.map((f) => f.age),
     frames.map((f) => f.age).sort((a, b) => a - b),
   );
+});
+
+test("lottery win resets accumulated chance, keeps subscription, and cannot draw again that year", () => {
+  const l = fixture();
+  l.simulation!.economy!.lottery = { active: true, years: 10, lastDrawAge: 29 };
+  const chance = lotteryChance(l);
+  while (randomAt(l.seed, l.age, 31) >= chance) l.seed++;
+  const before = l.money;
+  yearlyLottery(l);
+  assert.equal(
+    l.money,
+    before - gameConfig.lottery.annualCost + gameConfig.lottery.prize,
+  );
+  assert.equal(lotteryChance(l), 0.01);
+  assert.equal(l.simulation!.economy!.lottery.active, true);
+  assert.match(l.journey!.queue.at(-1)!.effects, /งวดถัดไป 1%/);
+  const cash = l.money;
+  yearlyLottery(l);
+  assert.equal(l.money, cash);
+  assert.equal(lotteryChance(l), 0.01);
+  l.age++;
+  while (randomAt(l.seed, l.age, 31) < 0.01) l.seed++;
+  yearlyLottery(l);
+  assert.equal(lotteryChance(l), 0.012);
+  assert.match(l.history.at(-1)!.detail, /โอกาส 1%/);
 });

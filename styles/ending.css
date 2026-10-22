@@ -8,7 +8,7 @@
   justify-content: center;
   padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
   gap: 10px;
-  font-family: Sarabun, Tahoma, sans-serif;
+  font-family: var(--font-family, "Sarabun", Tahoma, sans-serif);
 }
 .ending-card {
   margin: 0;
@@ -35,7 +35,7 @@
   border-radius: 0;
   padding: 8px 12px;
   font: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
   box-shadow: 3px 3px 0 #02060b;
   text-decoration: none;
   cursor: pointer;
@@ -117,7 +117,7 @@
 }
 .life-film header span {
   color: #e6c477;
-  font-size: 13px;
+  font-size: calc(13px * var(--font-scale, 1));
 }
 .film-frame {
   text-align: center;
@@ -129,11 +129,11 @@
   box-shadow: 6px 6px 0 #000;
 }
 .film-frame h1 {
-  font-size: 24px;
+  font-size: calc(24px * var(--font-scale, 1));
   margin: 14px 0 8px;
 }
 .film-frame p {
-  font-size: 20px;
+  font-size: calc(20px * var(--font-scale, 1));
   color: #f1d28c;
 }
 .film-frame small {
@@ -175,7 +175,7 @@
   color: #cee0e8;
   padding: 8px 4px;
   font: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--font-scale, 1));
 }
 .risk-options button[aria-pressed="true"] {
   border-color: #ffcf58;
@@ -184,7 +184,7 @@
 }
 .risk-options small {
   display: block;
-  font-size: 11px;
+  font-size: calc(11px * var(--font-scale, 1));
 }
 .reward-thought {
   animation: thought 2s steps(3, end) infinite;

@@ -1,6 +1,8 @@
 import type { Life } from "../types.ts";
 import { gameConfig } from "./config.ts";
 import { randomAt } from "../random.ts";
+export const lotteryPercent = (chance: number) =>
+  (chance * 100).toLocaleString("th-TH", { maximumFractionDigits: 4 });
 export function lotteryChance(life: Life) {
   return Math.min(
     gameConfig.lottery.maxChance,
@@ -21,11 +23,14 @@ export function yearlyLottery(life: Life) {
   life.money -= paid;
   life.journey!.debt += cost - paid;
   const won = randomAt(life.seed, life.age, 31) < chance;
-  if (won) life.money += gameConfig.lottery.prize;
+  if (won) {
+    life.money += gameConfig.lottery.prize;
+    if (gameConfig.lottery.resetOnWin) ticket.years = 0;
+  }
   const title = won ? "ถูกรางวัลหวย 8 ล้านบาท!" : "ผลหวยประจำปี";
   const detail =
     "โอกาส " +
-    Math.round(chance * 100) +
+    lotteryPercent(chance) +
     "% · ค่าหวย −฿" +
     cost +
     (won
@@ -47,6 +52,9 @@ export function yearlyLottery(life: Life) {
       text: detail,
       visual: "lottery",
       scene: "gift",
-      effects: "รับเงินเข้ากระเป๋าแล้ว",
+      effects:
+        "รับเงินเข้ากระเป๋าแล้ว · โอกาสงวดถัดไป " +
+        lotteryPercent(lotteryChance(life)) +
+        "%",
     });
 }

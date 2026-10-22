@@ -1,3 +1,5 @@
+import { gameConfig } from "./journey/config.ts";
+import { lotteryPercent } from "./journey/lottery.ts";
 import { careers } from "./careers.ts";
 export type Venture = {
   id: string;
@@ -12,7 +14,10 @@ export const ventures: Venture[] = [
   {
     id: "cancel-lottery",
     label: "ยกเลิกซื้อหวยรายปี",
-    detail: "หยุดรายจ่ายและรีเซ็ตโอกาสกลับไป 2%",
+    detail:
+      "หยุดรายจ่ายและรีเซ็ตโอกาสกลับไป " +
+      lotteryPercent(gameConfig.lottery.chance) +
+      "%",
     icon: "ticket",
     cost: 0,
     group: "ลงทุน",
@@ -70,7 +75,14 @@ export const ventures: Venture[] = [
     id: "lottery",
     label: "ซื้อหวยทุกปี",
     detail:
-      "80 บาท/ปี · เริ่ม 2% เพิ่มปีละ 1 จุดเปอร์เซ็นต์ · รางวัล 8,000,000 · เริ่มซื้อปีหน้า",
+      gameConfig.lottery.annualCost +
+      " บาท/ปี · เริ่ม " +
+      lotteryPercent(gameConfig.lottery.chance) +
+      "% เพิ่มปีละ " +
+      lotteryPercent(gameConfig.lottery.annualIncrease) +
+      " จุดเปอร์เซ็นต์ · รางวัล " +
+      gameConfig.lottery.prize.toLocaleString("th-TH") +
+      " · เริ่มซื้อปีหน้า",
     icon: "ticket",
     cost: 0,
     group: "ลงทุน",

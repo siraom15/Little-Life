@@ -1,5 +1,5 @@
 {
-  "revision": 12,
+  "revision": 13,
   "dark": {
     "mafiaIncome": 1800000,
     "undergroundIncome": 1200000,
@@ -198,10 +198,11 @@
   },
   "lottery": {
     "prize": 8000000,
-    "chance": 0.02,
-    "annualIncrease": 0.01,
+    "chance": 0.01,
+    "annualIncrease": 0.002,
     "annualCost": 80,
-    "maxChance": 1
+    "maxChance": 1,
+    "resetOnWin": true
   },
   "choiceCredit": {
     "bankruptcyThreshold": 350000
