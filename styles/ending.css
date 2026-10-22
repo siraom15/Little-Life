@@ -35,7 +35,7 @@
   border-radius: 0;
   padding: 8px 12px;
   font: inherit;
-  font-size: 8.4px;
+  font-size: 14px;
   box-shadow: 3px 3px 0 #02060b;
   text-decoration: none;
   cursor: pointer;
@@ -117,7 +117,7 @@
 }
 .life-film header span {
   color: #e6c477;
-  font-size: 7.8px;
+  font-size: 13px;
 }
 .film-frame {
   text-align: center;
@@ -129,11 +129,11 @@
   box-shadow: 6px 6px 0 #000;
 }
 .film-frame h1 {
-  font-size: 14.4px;
+  font-size: 24px;
   margin: 14px 0 8px;
 }
 .film-frame p {
-  font-size: 12px;
+  font-size: 20px;
   color: #f1d28c;
 }
 .film-frame small {
@@ -175,7 +175,7 @@
   color: #cee0e8;
   padding: 8px 4px;
   font: inherit;
-  font-size: 8.4px;
+  font-size: 14px;
 }
 .risk-options button[aria-pressed="true"] {
   border-color: #ffcf58;
@@ -184,7 +184,7 @@
 }
 .risk-options small {
   display: block;
-  font-size: 6.6px;
+  font-size: 11px;
 }
 .reward-thought {
   animation: thought 2s steps(3, end) infinite;
